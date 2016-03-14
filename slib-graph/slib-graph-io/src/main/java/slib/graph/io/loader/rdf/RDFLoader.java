@@ -39,8 +39,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.openrdf.rio.ParserConfig;
 
+import org.openrdf.rio.ParserConfig;
 import org.openrdf.rio.RDFFormat;
 import org.openrdf.rio.RDFHandler;
 import org.openrdf.rio.RDFHandlerException;
@@ -161,7 +161,9 @@ public class RDFLoader implements GraphLoader {
             logger.info("Parser loaded for: " + parser.getRDFFormat());
             parser.setRDFHandler(rdfHandler);
             logger.info("Parsing RDF file...");
-            parser.parse(inputStream, "");
+            String uri = g.getURI().toString();
+            
+            parser.parse(inputStream,uri);
 
         } catch (IOException e) {
             throw new SLIB_Ex_Critic(e.getMessage());
