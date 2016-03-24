@@ -4,11 +4,14 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
+import slib.graph.algo.traversal.classical.BFS;
 import slib.graph.io.conf.GDataConf;
 import slib.graph.io.loader.GraphLoaderGeneric;
 import slib.graph.io.util.GFormat;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
+import slib.graph.model.graph.utils.Direction;
+import slib.graph.model.graph.utils.WalkConstraint;
 import slib.graph.model.impl.graph.memory.GraphMemory;
 import slib.graph.model.impl.repo.URIFactoryMemory;
 import slib.graph.model.repo.URIFactory;
@@ -39,6 +42,8 @@ public class Swrc_Example {
         
         // First we define the information content (IC) we will use
         ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
+        
+      
         
       
         
