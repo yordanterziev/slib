@@ -33,9 +33,12 @@
  */
 package slib.examples.graph.traversal;
 
+import java.util.HashMap;
+
 import org.openrdf.model.URI;
 import org.openrdf.model.vocabulary.OWL;
 import org.openrdf.model.vocabulary.RDFS;
+
 import slib.graph.algo.traversal.classical.BFS;
 import slib.graph.algo.utils.GAction;
 import slib.graph.algo.utils.GActionType;
@@ -86,6 +89,8 @@ public class GO_BFS {
 
         // General information about the graph
         System.out.println(graph.toString());
+        
+       
 
         WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.IN);
 
