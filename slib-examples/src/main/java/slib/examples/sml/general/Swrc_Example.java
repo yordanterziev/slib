@@ -31,6 +31,8 @@ public class Swrc_Example {
         
         URI graph_uri = factory.getURI(swrcOntology);
         
+        System.out.println("" + graph_uri);
+        
         G graph = new GraphMemory(graph_uri);
         
         String fpath = System.getProperty("user.dir")+"/src/main/resources/swrc_updated_v0.7.1.owl";
@@ -58,7 +60,7 @@ public class Swrc_Example {
         //WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.IN);
         HashMap<URI, Direction> map = new HashMap<URI, Direction>();
         
-        map.put(factory.getURI("http://swrc.ontoware.org/ontology#worksAtProject"), Direction.BOTH);
+        map.put(factory.getURI("http://swrc.ontoware.org/ontology#Person"), Direction.BOTH);
         
         WalkConstraint wc = new WalkConstraintGeneric(map);
         // The BFS will be performed from the root according to the walk constraint specified above
