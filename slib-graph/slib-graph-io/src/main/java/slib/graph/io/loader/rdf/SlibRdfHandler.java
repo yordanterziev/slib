@@ -94,6 +94,18 @@ public class SlibRdfHandler implements RDFHandler {
         
 //        logger.debug(st.toString());
         
+        
+        
+        if(st.getPredicate().getLocalName().equals("range")||
+        	st.getPredicate().getLocalName().equals("domain")){
+        
+        	System.out.println(st);
+        }
+        else{
+        	System.out.println("      "+st);
+        }
+        
+        
 
         if (s instanceof URI && o instanceof URI) {
             g.addE((URI) s,st.getPredicate(),(URI) o);
