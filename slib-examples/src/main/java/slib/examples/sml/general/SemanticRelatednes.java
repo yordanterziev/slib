@@ -14,7 +14,7 @@ public interface SemanticRelatednes {
 	/**
 	 * 
 	 * 
-	 * @return
+	 * @return 
 	 */
 	public boolean hasNext();
 	
