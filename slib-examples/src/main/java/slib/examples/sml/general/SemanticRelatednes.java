@@ -20,8 +20,8 @@ public interface SemanticRelatednes {
 	
 
 	
-	
-	public List<Tree> getSemanticallyCorrectPaths(int hops);
+	//We need a suitable data structure
+	//public List<Tree> getSemanticallyCorrectPaths(int hops);
 
 	
 	public double getSemanticRelatedness(URI uriA, URI uriB );
