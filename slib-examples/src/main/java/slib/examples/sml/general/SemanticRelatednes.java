@@ -6,7 +6,7 @@ public interface SemanticRelatednes {
 
 	
 	/**
-	 * Called on component intialisation
+	 * Called on component initialisation 
 	 * @param uri
 	 */
 	public void setOrigin(URI uri);
