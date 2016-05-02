@@ -5,6 +5,11 @@ import org.openrdf.model.URI;
 public interface SemanticRelatednes {
 
 	
+	/**
+	 * Called on component intialisation
+	 * @param uri
+	 */
+	public void setOrigin(URI uri);
 	
 	/**
 	 * 
@@ -13,10 +18,11 @@ public interface SemanticRelatednes {
 	 */
 	public boolean hasNext();
 	
+
 	
-	/**
-	 * Returns next semantically related node
-	 * @return
-	 */
-	public URI next();
+	
+	public List<Tree> getSemanticallyCorrectPaths(int hops);
+
+	
+	public double getSemanticRelatedness(URI uriA, URI uriB );
 }
