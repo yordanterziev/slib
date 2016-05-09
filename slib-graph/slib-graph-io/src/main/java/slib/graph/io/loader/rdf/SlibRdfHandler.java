@@ -33,6 +33,9 @@
  */
 package slib.graph.io.loader.rdf;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
+
 import org.openrdf.model.Statement;
 import org.openrdf.model.URI;
 import org.openrdf.model.Value;
@@ -49,7 +52,8 @@ import slib.graph.model.repo.URIFactory;
  * @author Sébastien Harispe (sebastien.harispe@gmail.com)
  */
 public class SlibRdfHandler implements RDFHandler {
-
+	HashMap<URI,URI> hashRange = new HashMap<URI, URI>();
+	HashMap<URI,URI> hashDomain = new HashMap<URI, URI>();
     G g;
     Logger logger = LoggerFactory.getLogger(this.getClass());
     int count = 0;
@@ -74,7 +78,8 @@ public class SlibRdfHandler implements RDFHandler {
 
     @Override
     public void endRDF() throws RDFHandlerException {
-
+    	this.pushHorizontalEdges();
+    	System.out.println("+++++++PushHorizonal+++++++");
         logger.info("Ending Process " + count + " statements loaded ");
         logger.info("vertices: " + g.getV().size());
         logger.info("edges   : " + g.getE().size());
@@ -94,6 +99,20 @@ public class SlibRdfHandler implements RDFHandler {
         
 //        logger.debug(st.toString());
         
+        if	 (st.getPredicate().toString().contains("#domain")&&
+        	!(st.getObject().toString().contains("node"))){
+        	hashDomain.put( (URI) st.getSubject(),(URI) st.getObject());
+        	System.out.println("Domain push");
+        	System.out.println("------" +st.toString());
+        	
+        }
+        else if 	 (st.getPredicate().toString().contains("#range")&&
+        	!(st.getObject().toString().contains("node"))&&
+        	!(st.getObject().toString().contains("XMLSchema#"))){
+        	hashRange.put( (URI) st.getSubject(),(URI) st.getObject());
+        	System.out.println("Range push");
+        	System.out.println("++++++"+st.toString());
+        }   
 
         if (s instanceof URI && o instanceof URI) {
             g.addE((URI) s,st.getPredicate(),(URI) o);
@@ -111,4 +130,19 @@ public class SlibRdfHandler implements RDFHandler {
 
     @Override
     public void handleComment(String comment) throws RDFHandlerException {}
+    
+    
+    public void pushHorizontalEdges(){
+    	for(Entry<URI, URI> entry : hashDomain.entrySet()) {
+    	    URI key = entry.getKey();
+    	    URI value = entry.getValue();
+    	    if (hashRange.containsKey(key)){
+    	    	System.out.println("hashRange contians"+key.toString());
+    	    	System.out.println("#########"+key.toString()+value.toString()+hashRange.get(key).toString());
+    	    	g.addE(value, key, hashRange.get(key));
+    	    }
+    	    // do what you have to do here
+    	    // In your case, an other loop.
+    	}
+    }
 }

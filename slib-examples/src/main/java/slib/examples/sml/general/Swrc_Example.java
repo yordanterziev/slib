@@ -60,13 +60,13 @@ public class Swrc_Example {
         //WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.IN);
         HashMap<URI, Direction> map = new HashMap<URI, Direction>();
         
-        map.put(factory.getURI("http://swrc.ontoware.org/ontology#Person"), Direction.BOTH);
+        map.put(factory.getURI("http://swrc.ontoware.org/ontology#worksAtProject"), Direction.BOTH);
         
         WalkConstraint wc = new WalkConstraintGeneric(map);
         // The BFS will be performed from the root according to the walk constraint specified above
         // In this case, only rdfs:SubClassOf triplets (edges) will be considered and the traversal 
         // will always be made from the target to the source of the SubClassOf relationship
-        URI employeeUri = factory.getURI(swrcOntology+"#AssistantProfessor");
+        URI employeeUri = factory.getURI(swrcOntology+"#Person");
         BFS bfs = new BFS(graph, employeeUri, wc); // you can do the same with the DFS class
         
         while(bfs.hasNext()){
