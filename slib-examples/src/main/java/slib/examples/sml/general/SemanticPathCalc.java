@@ -8,7 +8,7 @@ import slib.sml.sm.core.engine.SM_Engine;
 import slib.utils.ex.SLIB_Exception;
 
 /**
- * @author Florian
+ * @author Florian Jakobs
  *
  */
 public class SemanticPathCalc implements SemanticRelatednes {
@@ -16,7 +16,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private OntologyCreator oc;
 	private URI graph_uri;
 	private G graph;
-	private  SM_Engine engine;
+	private SM_Engine engine;
 	private URIFactory uriFactory;
 	private URI origin;
 	

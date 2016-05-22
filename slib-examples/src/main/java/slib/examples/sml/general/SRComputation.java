@@ -4,6 +4,10 @@ import slib.graph.model.impl.repo.URIFactoryMemory;
 import slib.graph.model.repo.URIFactory;
 import slib.utils.ex.SLIB_Exception;
 
+/**
+ * @author Florian Jakobs
+ *
+ */
 public class SRComputation {
 
 	public static void main(String[] args) throws SLIB_Exception {
