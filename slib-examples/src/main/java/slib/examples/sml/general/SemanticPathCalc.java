@@ -18,6 +18,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private G graph;
 	private  SM_Engine engine;
 	private URIFactory uriFactory;
+	private URI origin;
 	
     /**
      * @param ontology a String describing the ontology's URI
@@ -38,10 +39,17 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		return false;
 	}
 
+
 	@Override
-	public URI next() {
+	public void setOrigin(URI uri) {
 		// TODO Auto-generated method stub
-		return null;
+		this.origin = uri;
+	}
+
+	@Override
+	public double getSemanticRelatedness(URI uriA, URI uriB) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 
