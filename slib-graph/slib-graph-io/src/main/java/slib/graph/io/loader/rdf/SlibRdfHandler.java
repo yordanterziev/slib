@@ -52,9 +52,11 @@ import slib.graph.model.repo.URIFactory;
  * @author Sébastien Harispe (sebastien.harispe@gmail.com)
  */
 public class SlibRdfHandler implements RDFHandler {
+	// HashMaps that save the non RDF Standard Edges
 	HashMap<URI,URI> hashRange = new HashMap<URI, URI>();
 	HashMap<URI,URI> hashDomain = new HashMap<URI, URI>();
-    G g;
+    
+	G g;
     Logger logger = LoggerFactory.getLogger(this.getClass());
     int count = 0;
     int countSkipped = 0;
@@ -78,7 +80,10 @@ public class SlibRdfHandler implements RDFHandler {
 
     @Override
     public void endRDF() throws RDFHandlerException {
+    	// Called to push the non Standard edges
     	this.pushHorizontalEdges();
+    	
+    	
     	System.out.println("+++++++PushHorizonal+++++++");
         logger.info("Ending Process " + count + " statements loaded ");
         logger.info("vertices: " + g.getV().size());
@@ -98,6 +103,8 @@ public class SlibRdfHandler implements RDFHandler {
         Value o = st.getObject();
         
 //        logger.debug(st.toString());
+        
+        // Pushing the non Standard edges to the associated HashMaps
         
         if	 (st.getPredicate().toString().contains("#domain")&&
         	!(st.getObject().toString().contains("node"))){
@@ -132,6 +139,11 @@ public class SlibRdfHandler implements RDFHandler {
     public void handleComment(String comment) throws RDFHandlerException {}
     
     
+    /**
+     * Pushes the non Standard edges to the graph
+     * 
+     * @author Florian Jakobs
+     */
     public void pushHorizontalEdges(){
     	for(Entry<URI, URI> entry : hashDomain.entrySet()) {
     	    URI key = entry.getKey();

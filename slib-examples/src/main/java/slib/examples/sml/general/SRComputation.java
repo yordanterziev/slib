@@ -5,8 +5,10 @@ import slib.graph.model.repo.URIFactory;
 import slib.utils.ex.SLIB_Exception;
 
 /**
+ * A test implementation for {@link SemanticPathCalc}
+ * 
  * @author Florian Jakobs
- *
+ * 
  */
 public class SRComputation {
 

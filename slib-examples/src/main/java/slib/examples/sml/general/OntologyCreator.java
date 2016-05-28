@@ -12,6 +12,13 @@ import slib.graph.model.repo.URIFactory;
 import slib.sml.sm.core.engine.SM_Engine;
 import slib.utils.ex.SLIB_Exception;
 
+/**
+ * The OntologyCreator fills a graph with the information given in an owl File using a RDF
+ * format. It also creates a {@link URIFactory}.
+ * 
+ * @author Florian Jakobs
+ *
+ */
 public class OntologyCreator {
 	
 	private URI uriOnto;

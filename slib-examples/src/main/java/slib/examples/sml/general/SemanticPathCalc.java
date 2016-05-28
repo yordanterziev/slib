@@ -8,8 +8,11 @@ import slib.sml.sm.core.engine.SM_Engine;
 import slib.utils.ex.SLIB_Exception;
 
 /**
+ *The SemanticPathCalc implements {@link SemanticRelatednes}. It provides an implementation for 
+ * calculating semantic correct path in the specified ontology. It uses a {@link BFS} to traverse the graph.
+ * 
  * @author Florian Jakobs
- *
+ * 
  */
 public class SemanticPathCalc implements SemanticRelatednes {
 
@@ -21,6 +24,8 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private URI origin;
 	
     /**
+     * This constructor uses {@link OntologyCreator} in order to create a graph filled with
+     * an ontology.
      * @param ontology a String describing the ontology's URI
      * @param filepath relative location of the file containing the ontology
      * @throws SLIB_Exception
@@ -33,6 +38,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
         uriFactory = oc.getFactory();
     }
     
+	
 	@Override
 	public boolean hasNext() {
 		// TODO Auto-generated method stub
