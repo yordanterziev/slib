@@ -39,6 +39,11 @@ public class SemanticPathCalc implements SemanticRelatednes {
     }
     
 	
+	public G getGraph() {
+		return graph;
+	}
+
+
 	@Override
 	public boolean hasNext() {
 		// TODO Auto-generated method stub

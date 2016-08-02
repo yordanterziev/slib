@@ -149,8 +149,8 @@ public class SlibRdfHandler implements RDFHandler {
     	    URI key = entry.getKey();
     	    URI value = entry.getValue();
     	    if (hashRange.containsKey(key)){
-    	    	System.out.println("hashRange contians"+key.toString());
-    	    	System.out.println("#########"+key.toString()+value.toString()+hashRange.get(key).toString());
+    	    	System.out.println("hashRange contians "+key.toString());
+    	    	System.out.println("######### "+value.toString()+key.toString()+hashRange.get(key).toString());
     	    	g.addE(value, key, hashRange.get(key));
     	    }
     	    // do what you have to do here

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:edges xmlns:tns="http://www.example.org/EdgeSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/EdgeSchema EdgeSchema.xsd ">
+  <!-- In this XML Document, the ambiguous edges are all set to Up/Down -->
+  <tns:horizontalEdges>
+  	<tns:name>carriesOut</tns:name>
+  	<tns:name>carriedOutBy</tns:name>
+  	<tns:name>dealtWithIn</tns:name>
+  	<tns:name>projectInfo</tns:name>
+  	<tns:name>describesProject</tns:name>
+  	<tns:name>contributor</tns:name>
+  	<tns:name>worksAtProject</tns:name>
+  	<tns:name>finances</tns:name>
+  	<tns:name>financedBy</tns:name>
+  	<tns:name>cite</tns:name>
+  	<tns:name>citeBy</tns:name>
+  	<tns:name>givenBy</tns:name>
+  	<tns:name>isAbout</tns:name>
+  	<tns:name>isWorkedOnBy</tns:name>
+  	<tns:name>cooperateWith</tns:name>
+  	<!-- Meaning? -->
+  	<tns:name>editor</tns:name>
+  	<tns:name>memberOfPC</tns:name>
+  </tns:horizontalEdges>
+  <tns:upwardEdges>
+  	<tns:name>atEvent</tns:name>
+  	<tns:name>supervisor</tns:name>
+  	<tns:name>affiliation</tns:name>
+  	<tns:name>studiesAt</tns:name>
+  	
+  	<tns:name>vendor</tns:name>
+  	<tns:name>head</tns:name>
+  	<tns:name>publisher</tns:name>
+  	<tns:name>developedBy</tns:name>
+  </tns:upwardEdges>
+  <tns:downwardEdges>
+  	<tns:name>supervises</tns:name>
+  	<tns:name>hasPartEvent</tns:name>
+  	<tns:name>employs</tns:name>
+  	<tns:name>student</tns:name>
+  	
+  	<tns:name>organizerOrChairOf</tns:name>
+  	<tns:name>participant</tns:name>
+  	<tns:name>head</tns:name>
+  	<tns:name>headOfGroup</tns:name>
+  	<tns:name>publisherOf</tns:name>
+  	<tns:name>develops</tns:name>
+  	<tns:name>member</tns:name>
+  	<tns:name>publication</tns:name>
+  	<tns:name>outcomeDocument</tns:name>
+  	<tns:name>outcomeProduct</tns:name>
+  	<tns:name>technicalReport</tns:name>
+  </tns:downwardEdges>
+</tns:edges>
