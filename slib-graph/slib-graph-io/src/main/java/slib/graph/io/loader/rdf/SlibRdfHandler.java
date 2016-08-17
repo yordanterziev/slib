@@ -106,20 +106,29 @@ public class SlibRdfHandler implements RDFHandler {
         
         // Pushing the non Standard edges to the associated HashMaps
         
-        if	 (st.getPredicate().toString().contains("#domain")&&
-        	!(st.getObject().toString().contains("node"))){
+        if	 (st.getPredicate().toString().contains("#domain")
+        		&& !(st.getObject().toString().contains("node"))
+        	 ){
         	hashDomain.put( (URI) st.getSubject(),(URI) st.getObject());
         	System.out.println("Domain push");
         	System.out.println("------" +st.toString());
         	
         }
-        else if 	 (st.getPredicate().toString().contains("#range")&&
-        	!(st.getObject().toString().contains("node"))&&
-        	!(st.getObject().toString().contains("XMLSchema#"))){
+        else if 	 (st.getPredicate().toString().contains("#range")
+        			 &&!(st.getObject().toString().contains("node"))
+        			 &&!(st.getObject().toString().contains("XMLSchema#"))
+        			 ){
         	hashRange.put( (URI) st.getSubject(),(URI) st.getObject());
         	System.out.println("Range push");
         	System.out.println("++++++"+st.toString());
-        }   
+        }
+        else{
+        	System.out.println("Subject " + st.getSubject().toString());
+        	System.out.println("Pred " + st.getPredicate().toString());
+        	System.out.println("Object " + st.getObject().toString());
+        	System.out.println("Finish statement");
+        	System.out.println();
+        }
 
         if (s instanceof URI && o instanceof URI) {
             g.addE((URI) s,st.getPredicate(),(URI) o);

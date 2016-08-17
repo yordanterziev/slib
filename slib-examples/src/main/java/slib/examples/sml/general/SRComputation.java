@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.*;
 
@@ -12,6 +13,7 @@ import org.openrdf.model.vocabulary.RDFS;
 
 import slib.examples.sml.general.xml.edges.*;
 import slib.graph.algo.traversal.classical.BFS;
+import slib.graph.model.graph.G;
 import slib.graph.model.graph.utils.Direction;
 import slib.graph.model.graph.utils.WalkConstraint;
 import slib.graph.model.impl.repo.URIFactoryMemory;
@@ -57,6 +59,13 @@ public class SRComputation {
         	URI temp = factory.getURI(swrcOntology+"#"+s);
         	map.put(temp, Direction.BOTH);
         }
+        
+        G g = test.getGraph();
+        System.out.println(g.containsVertex(factory.getURI(swrcOntology+"#Document")));
+        System.out.println(g.containsVertex(factory.getURI(swrcOntology+"#Product")));
+        System.out.println(g.getNumberVertices());
+        		
+       
         
         WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
         wc.addWalkconstraints(new WalkConstraintGeneric(map));
