@@ -1,5 +1,10 @@
 package slib.examples.sml.general;
 
+import java.io.FileNotFoundException;
+import java.util.List;
+
+import javax.xml.bind.JAXBException;
+
 import org.openrdf.model.URI;
 
 /**
@@ -38,4 +43,15 @@ public interface SemanticRelatednes {
 	 *  -1 otherwise
 	 */
 	public double getSemanticRelatedness(URI uriA, URI uriB );
+	
+	/**
+	 * Loads the upward, downward and horizontal edges defined in an XML file and 
+	 * fills a WalkConstraint with the given edges. This WC is used to initialise the
+	 * BFSLevel search.
+	 * 
+	 * @param file XML file
+	 * @throws JAXBException
+	 * @throws FileNotFoundException
+	 */
+	public void initialiseWalk(String file) throws JAXBException, FileNotFoundException;
 }
