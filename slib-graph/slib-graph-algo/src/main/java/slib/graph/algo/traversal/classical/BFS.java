@@ -37,9 +37,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 import org.openrdf.model.URI;
+
 import slib.graph.algo.traversal.GraphTraversal;
 import slib.graph.model.graph.G;
+import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.WalkConstraint;
 import slib.utils.impl.SetUtils;
 
@@ -57,6 +60,10 @@ import slib.utils.impl.SetUtils;
  *
  * @author Sébastien Harispe (sebastien.harispe@gmail.com)
  *
+ * Furthermore this Class can also perform a traversal level by level. 
+ * 
+ * @author Florian Jakobs
+ *
  */
 public class BFS implements GraphTraversal {
 
@@ -64,7 +71,10 @@ public class BFS implements GraphTraversal {
     private WalkConstraint wc;
     URI current;
     List<URI> queue;
+    List<URI> queuenextlvl;
+    List<URI> visitedLvl = new ArrayList<URI>();
     Set<URI> visited;
+    int lvl =1;
 
     /**
      * Creates an instance of BFS used to perform a Bread First Search Traversal
@@ -82,6 +92,7 @@ public class BFS implements GraphTraversal {
         this.wc = wc;
 
         this.queue = new ArrayList<URI>(sources);
+        this.queuenextlvl = new ArrayList<URI>(sources);
 
         visited = new HashSet<URI>();
 
@@ -108,7 +119,7 @@ public class BFS implements GraphTraversal {
      */
     @Override
     public boolean hasNext() {
-        return queue.isEmpty() == false;
+        return ((queue.isEmpty())&&(queuenextlvl.isEmpty())) == false;
     }
 
     /**
@@ -134,4 +145,56 @@ public class BFS implements GraphTraversal {
         current = src;
         return src;
     }
+    
+    /**
+     * @author Florian Jakobs
+     * This method returns a List of URIs containing the next Level of a BFS search.
+     * On the first call it returns a list with one element (the starting element).
+     * Any other call returns a list with an unspecified amount of elements.
+     * 
+     * <b>Important: </b>This method should not be used with next(). 
+     * @return List of URIs returns an empty list, if the bfs is done
+     * 
+     */
+    public List<URI> nextLevel(){
+    	List<URI> result = new ArrayList<URI>();
+    	if (lvl!=1){
+    		queue.addAll(queuenextlvl);
+    		queuenextlvl.clear();
+    	}
+    	else
+    		queuenextlvl.clear();
+    	while (!queue.isEmpty()){
+		URI src = queue.get(0);
+        queue.remove(0);
+        
+
+        Set<URI> vertices = g.getV(src, wc);
+        Set<E> edges = g.getE(src, wc);
+        for (E e : edges){
+        	if(!wc.getAcceptedWalks_DIR_IN().contains(e.getURI())){
+        		edges.remove(e);
+        	};
+        }
+        for (URI v : vertices) {
+        		
+        	if (!visited.contains(v) ) {
+        		for (E e : edges){
+                   	if(e.getTarget().equals(v)){
+                   		result.add(e.getURI());
+                   	};
+                }
+        		queuenextlvl.add(v);
+        		visited.add(v);
+        	}
+        }	
+        current = src;
+        
+        result.add(src);
+        
+    	}
+    	lvl++;
+        return result;
+		
+	}
 }
