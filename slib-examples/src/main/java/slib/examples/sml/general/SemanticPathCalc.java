@@ -71,6 +71,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 	
 	
+	
 	@Override
 	public boolean hasNext() {
 		// TODO Auto-generated method stub
