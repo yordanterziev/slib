@@ -49,6 +49,7 @@ public interface SemanticRelatednes {
 	 * fills a WalkConstraint with the given edges. This WC is used to initialise the
 	 * BFSLevel search.
 	 * 
+	 * 
 	 * @param file XML file
 	 * @throws JAXBException
 	 * @throws FileNotFoundException
