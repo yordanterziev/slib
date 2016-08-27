@@ -152,7 +152,7 @@ public class BFS implements GraphTraversal {
      * On the first call it returns a list with one element (the starting element).
      * Any other call returns a list with an unspecified amount of elements.
      * 
-     * <b>Important: </b>This method should not be used with next(). 
+     * <b>Important: </b>This method should not be used together with next(). 
      * @return List of URIs returns an empty list, if the bfs is done
      * 
      */

@@ -24,6 +24,9 @@ import slib.graph.model.graph.utils.WalkConstraint;
 import slib.graph.model.repo.URIFactory;
 import slib.graph.utils.WalkConstraintGeneric;
 import slib.sml.sm.core.engine.SM_Engine;
+import slib.sml.sm.core.metrics.ic.utils.IC_Conf_Topo;
+import slib.sml.sm.core.metrics.ic.utils.ICconf;
+import slib.sml.sm.core.utils.SMConstants;
 import slib.utils.ex.SLIB_Exception;
 
 /**
@@ -47,6 +50,9 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private List<String>  uEdges;
 	private String ontology;
 	private BFS bfs;
+	private int levelCounter = 0;
+	// Method for calculating the IC
+	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
 	
 	
     /**
@@ -92,8 +98,11 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public double getSemanticRelatedness(URI uriA, URI uriB) {
+	public double getSemanticRelatedness(URI uriA, URI uriB) throws SLIB_Exception {
 		// TODO Auto-generated method stub
+		double ic1 = engine.getIC(icConf, uriA);
+		double ic2 = engine.getIC(icConf, uriB);
+		
 		return 0;
 	}
 	

@@ -7,6 +7,8 @@ import javax.xml.bind.JAXBException;
 
 import org.openrdf.model.URI;
 
+import slib.utils.ex.SLIB_Exception;
+
 /**
  *  The interface defines methods to calculate semantic correct paths based on the work of TODO 
  * 
@@ -41,8 +43,9 @@ public interface SemanticRelatednes {
 	 * @param uriB Finishing concept
 	 * @return the Semantic Relatedness if a correct path can be found;
 	 *  -1 otherwise
+	 * @throws SLIB_Exception 
 	 */
-	public double getSemanticRelatedness(URI uriA, URI uriB );
+	public double getSemanticRelatedness(URI uriA, URI uriB ) throws SLIB_Exception;
 	
 	/**
 	 * Loads the upward, downward and horizontal edges defined in an XML file and 

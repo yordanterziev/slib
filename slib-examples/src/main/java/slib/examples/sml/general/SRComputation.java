@@ -25,8 +25,8 @@ public class SRComputation {
 		test.setOrigin(factory.getURI(swrcOntology+origin));
 		
 		test.initialiseWalk("Edge.xml");
-		test.hasNext();
-		test.hasNext();
+		while (test.hasNext())
+			System.out.println(test.hasNext());
 		//commit
 		
         
