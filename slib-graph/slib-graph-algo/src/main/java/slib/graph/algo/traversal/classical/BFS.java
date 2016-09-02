@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
 import org.openrdf.model.URI;
 
 import slib.graph.algo.traversal.GraphTraversal;
@@ -75,6 +74,7 @@ public class BFS implements GraphTraversal {
     List<URI> visitedLvl = new ArrayList<URI>();
     Set<URI> visited;
     int lvl =1;
+    List<URI> edgeNext = new ArrayList<URI>();
 
     /**
      * Creates an instance of BFS used to perform a Bread First Search Traversal
@@ -161,37 +161,37 @@ public class BFS implements GraphTraversal {
     	if (lvl!=1){
     		queue.addAll(queuenextlvl);
     		queuenextlvl.clear();
-    	}
-    	else
-    		queuenextlvl.clear();
+    		edgeNext.clear();
+    	} else {
+			queuenextlvl.clear();
+		}
     	while (!queue.isEmpty()){
-		URI src = queue.get(0);
-        queue.remove(0);
-        
-
-        Set<URI> vertices = g.getV(src, wc);
-        Set<E> edges = g.getE(src, wc);
-        for (E e : edges){
-        	if(!wc.getAcceptedWalks_DIR_IN().contains(e.getURI())){
-        		edges.remove(e);
-        	};
-        }
-        for (URI v : vertices) {
-        		
-        	if (!visited.contains(v) ) {
-        		for (E e : edges){
-                   	if(e.getTarget().equals(v)){
-                   		result.add(e.getURI());
-                   	};
-                }
-        		queuenextlvl.add(v);
-        		visited.add(v);
-        	}
-        }	
-        current = src;
-        
-        result.add(src);
-        
+			URI src = queue.get(0);
+	        queue.remove(0);
+	        
+	
+	        Set<URI> vertices = g.getV(src, wc);
+	        Set<E> edges = g.getE(src, wc);
+	        
+	        
+	        for (URI v : vertices) {
+	        	if (!visited.contains(v) ) { 
+	        		for (E e : edges){
+	        			if(e.getSource().equals(src)) {
+	        				if (e.getTarget().equals(v)) {
+	        					edgeNext.add(e.getURI());
+	        					queuenextlvl.add(v);
+	        					visited.add(v);
+	        				}
+	    	        	}
+	        		}
+	        	}
+	        }
+	        // Edges add Next level
+	        
+	        current = src;
+	        
+	        result.add(src);
     	}
     	lvl++;
         return result;
