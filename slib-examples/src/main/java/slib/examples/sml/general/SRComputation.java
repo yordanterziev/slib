@@ -27,6 +27,8 @@ public class SRComputation {
 		test.initialiseWalk("Edge.xml");
 		while (test.hasNext())
 			System.out.println(test.hasNext());
+		
+		System.out.println(test.getSemanticRelatedness(factory.getURI(swrcOntology+origin), factory.getURI(swrcOntology+"#Student")));
 		//commit
 		
         

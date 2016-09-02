@@ -27,6 +27,7 @@ import slib.sml.sm.core.engine.SM_Engine;
 import slib.sml.sm.core.metrics.ic.utils.IC_Conf_Topo;
 import slib.sml.sm.core.metrics.ic.utils.ICconf;
 import slib.sml.sm.core.utils.SMConstants;
+import slib.sml.sm.core.utils.SMconf;
 import slib.utils.ex.SLIB_Exception;
 
 /**
@@ -53,6 +54,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private int levelCounter = 0;
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
+	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
 	
 	
     /**
@@ -100,10 +102,12 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	@Override
 	public double getSemanticRelatedness(URI uriA, URI uriB) throws SLIB_Exception {
 		// TODO Auto-generated method stub
-		double ic1 = engine.getIC(icConf, uriA);
-		double ic2 = engine.getIC(icConf, uriB);
+		//double ic1 = engine.getIC(icConf, uriA);
+		//double ic2 = engine.getIC(icConf, uriB);
+		measureConf.setICconf(icConf);
 		
-		return 0;
+		
+		return engine.compare(measureConf, uriA, uriB);
 	}
 	
 	
