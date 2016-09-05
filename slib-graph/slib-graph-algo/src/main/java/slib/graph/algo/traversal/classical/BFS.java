@@ -176,17 +176,17 @@ public class BFS implements GraphTraversal {
 	        
 	        for (URI v : vertices) {
 	        	if (!visited.contains(v) ) { 
-	        		for (E e : edges){
-	        			if(e.getSource().equals(src)) {
-	        				if (e.getTarget().equals(v)) {
-	        					edgeNext.add(e.getURI());
+	        		//for (E e : edges){
+	        			//if(e.getSource().equals(src)) {
+	        				//if (e.getTarget().equals(v)) {
+	        					//edgeNext.add(e.getURI());
 	        					queuenextlvl.add(v);
 	        					visited.add(v);
-	        				}
-	    	        	}
+	        			//	}
+	    	        	//}
 	        		}
 	        	}
-	        }
+	       // }
 	        // Edges add Next level
 	        
 	        current = src;
@@ -197,4 +197,8 @@ public class BFS implements GraphTraversal {
         return result;
 		
 	}
+    
+    public int getLevel(){
+    	return lvl;
+    }
 }
