@@ -2,6 +2,7 @@ package slib.examples.sml.general;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,9 +15,7 @@ import org.openrdf.model.URI;
 import org.openrdf.model.vocabulary.RDFS;
 
 import slib.examples.sml.general.xml.edges.Edges;
-
-
-
+import slib.examples.sml.tree.SrTree;
 import slib.graph.algo.traversal.classical.BFS;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.utils.Direction;
@@ -55,6 +54,8 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
+	private SrTree<URI> currentTree;
+	private List<SrTree<URI>> treeList;
 	
 	
     /**

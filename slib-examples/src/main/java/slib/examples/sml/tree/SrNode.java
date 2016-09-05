@@ -7,6 +7,7 @@ public class SrNode<T> {
 
 	private T data;
 	private ArrayList<SrNode<T>> children;
+	private ArrayList<SrNode<T>> childrenEdges;
 		
 	public SrNode(T data){
 		this.setData(data);
@@ -27,8 +28,16 @@ public class SrNode<T> {
 			return null;
 	}
 		
+	public ArrayList<SrNode<T>> getChildrenEdges() {
+		return childrenEdges;
+	}
+
 	public boolean hasChildren(){
 		return (children!=null);
+	}
+	
+	public boolean hasChildrenEdges(){
+		return (childrenEdges!=null);
 	}
 	
 	public int getNumberOfChildren(){
