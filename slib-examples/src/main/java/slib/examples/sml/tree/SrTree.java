@@ -11,8 +11,8 @@ public class SrTree {
 	private int lvl;
 	private SrNode root;
 	
-	public SrTree(SrNode root){
-		this.root = root;
+	public SrTree(URI root){
+		this.root = new SrNode(root);
 		lvl=1;
 	}
 	

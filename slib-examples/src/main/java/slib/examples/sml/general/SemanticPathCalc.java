@@ -2,6 +2,7 @@ package slib.examples.sml.general;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private List<String> uEdges;
 	private String ontology;
 	private BFS bfs;
-	private int levelCounter = 0;
+	private int levelCounter = 1;
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
@@ -84,7 +85,10 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	public boolean hasNext() {
 		// TODO Auto-generated method stub
 		// bfs.
-		System.out.println(bfs.nextLevel().toString());
+		//System.out.println(bfs.nextLevel().toString());
+		ArrayList<ArrayList<URI>> temp = new ArrayList<ArrayList<URI>>();
+		temp.addAll(bfs.nextLevel());
+		currentTree.addElementatLevel(temp, levelCounter);
 		// System.out.println(bfs.nexter().toString());
 		// System.out.println(bfs.nexter().toString());
 
@@ -145,6 +149,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
 		wc.addWalkconstraints(new WalkConstraintGeneric(map));
 		bfs = new BFS(graph, origin, wc);
+		currentTree = new SrTree(origin);
 	}
 
 	@Override
