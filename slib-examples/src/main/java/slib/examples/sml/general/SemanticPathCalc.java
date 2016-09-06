@@ -2,7 +2,6 @@ package slib.examples.sml.general;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,8 +29,9 @@ import slib.sml.sm.core.utils.SMconf;
 import slib.utils.ex.SLIB_Exception;
 
 /**
- *The SemanticPathCalc implements {@link SemanticRelatednes}. It provides an implementation for 
- * calculating semantic correct path in the specified ontology. It uses a {@link BFS} to traverse the graph.
+ * The SemanticPathCalc implements {@link SemanticRelatednes}. It provides an
+ * implementation for calculating semantic correct path in the specified
+ * ontology. It uses a {@link BFS} to traverse the graph.
  * 
  * @author Florian Jakobs
  * 
@@ -46,53 +46,50 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private URI origin;
 	private JAXBContext edgeCategory;
 	private List<String> hEdges;
-	private List<String>  dEdges;
-	private List<String>  uEdges;
+	private List<String> dEdges;
+	private List<String> uEdges;
 	private String ontology;
 	private BFS bfs;
 	private int levelCounter = 0;
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
-	private SrTree<URI> currentTree;
-	private List<SrTree<URI>> treeList;
-	
-	
-    /**
-     * This constructor uses {@link OntologyCreator} in order to create a graph filled with
-     * an ontology.
-     * @param ontology a String describing the ontology's URI
-     * @param filepath relative location of the file containing the ontology
-     * @throws SLIB_Exception
-     */
-    public SemanticPathCalc(String ontology,String filepath) throws SLIB_Exception{
-    	this.ontology = ontology;
-    	oc = new OntologyCreator(ontology,filepath);
-    	graph_uri = oc.getUriOnto();
-        graph = oc.getGraph();
-        engine = oc.getEngine();
-        uriFactory = oc.getFactory();
-    }
-    
-	
+	private SrTree currentTree;
+	private List<SrTree> treeList;
+
+	/**
+	 * This constructor uses {@link OntologyCreator} in order to create a graph
+	 * filled with an ontology.
+	 * 
+	 * @param ontology
+	 *            a String describing the ontology's URI
+	 * @param filepath
+	 *            relative location of the file containing the ontology
+	 * @throws SLIB_Exception
+	 */
+	public SemanticPathCalc(String ontology, String filepath) throws SLIB_Exception {
+		this.ontology = ontology;
+		oc = new OntologyCreator(ontology, filepath);
+		graph_uri = oc.getUriOnto();
+		graph = oc.getGraph();
+		engine = oc.getEngine();
+		uriFactory = oc.getFactory();
+	}
+
 	public G getGraph() {
 		return graph;
 	}
-	
-	
-	
+
 	@Override
 	public boolean hasNext() {
 		// TODO Auto-generated method stub
-		//bfs.
+		// bfs.
 		System.out.println(bfs.nextLevel().toString());
-		//System.out.println(bfs.nexter().toString());
-		//System.out.println(bfs.nexter().toString());
-		
-		
+		// System.out.println(bfs.nexter().toString());
+		// System.out.println(bfs.nexter().toString());
+
 		return bfs.hasNext();
 	}
-
 
 	@Override
 	public void setOrigin(URI uri) {
@@ -103,57 +100,55 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	@Override
 	public double getSemanticRelatedness(URI uriA, URI uriB) throws SLIB_Exception {
 		// TODO Auto-generated method stub
-		//double ic1 = engine.getIC(icConf, uriA);
-		//double ic2 = engine.getIC(icConf, uriB);
+		// double ic1 = engine.getIC(icConf, uriA);
+		// double ic2 = engine.getIC(icConf, uriB);
 		measureConf.setICconf(icConf);
-		
-		
+
 		return engine.compare(measureConf, uriA, uriB);
 	}
-	
-	
+
 	/**
 	 * Reads the XML File containing the Edges.
 	 * 
-	 * @param file The XML file containing the Edges
+	 * @param file
+	 *            The XML file containing the Edges
 	 * @throws JAXBException
 	 * @throws FileNotFoundException
 	 */
-	private void loadEdges(String file) throws JAXBException, FileNotFoundException{
+	private void loadEdges(String file) throws JAXBException, FileNotFoundException {
 		edgeCategory = JAXBContext.newInstance("slib.examples.sml.general.xml.edges");
 		Unmarshaller u = edgeCategory.createUnmarshaller();
-		Edges edges = (Edges)((JAXBElement) u.unmarshal(new FileInputStream(file)) ).getValue();
+		Edges edges = (Edges) ((JAXBElement) u.unmarshal(new FileInputStream(file))).getValue();
 		hEdges = edges.getHorizontalEdges().getName();
 		dEdges = edges.getDownwardEdges().getName();
 		uEdges = edges.getUpwardEdges().getName();
 	}
-	
+
 	/**
-	 * Loads the upward downward and horizontal Edges into the WC and creates a BFS
+	 * Loads the upward downward and horizontal Edges into the WC and creates a
+	 * BFS
 	 */
-	private void loadBFS(){
-        HashMap<URI, Direction> map = new HashMap<URI, Direction>();
-        for(String s:hEdges){
-        	URI temp = uriFactory.getURI(ontology+"#"+s);
-        	map.put(temp, Direction.BOTH);
-        }
-        for(String s:dEdges){
-        	URI temp = uriFactory.getURI(ontology+"#"+s);
-        	map.put(temp, Direction.BOTH);
-        }
-        for(String s:uEdges){
-        	URI temp = uriFactory.getURI(ontology+"#"+s);
-        	map.put(temp, Direction.BOTH);
-        }
-        WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
-        wc.addWalkconstraints(new WalkConstraintGeneric(map));
-        bfs = new BFS(graph,origin, wc);
+	private void loadBFS() {
+		HashMap<URI, Direction> map = new HashMap<URI, Direction>();
+		for (String s : hEdges) {
+			URI temp = uriFactory.getURI(ontology + "#" + s);
+			map.put(temp, Direction.BOTH);
+		}
+		for (String s : dEdges) {
+			URI temp = uriFactory.getURI(ontology + "#" + s);
+			map.put(temp, Direction.BOTH);
+		}
+		for (String s : uEdges) {
+			URI temp = uriFactory.getURI(ontology + "#" + s);
+			map.put(temp, Direction.BOTH);
+		}
+		WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
+		wc.addWalkconstraints(new WalkConstraintGeneric(map));
+		bfs = new BFS(graph, origin, wc);
 	}
 
-
 	@Override
-	public void initialiseWalk(String file) throws JAXBException,
-			FileNotFoundException {
+	public void initialiseWalk(String file) throws JAXBException, FileNotFoundException {
 		// TODO Auto-generated method stub
 		this.loadEdges(file);
 		this.loadBFS();

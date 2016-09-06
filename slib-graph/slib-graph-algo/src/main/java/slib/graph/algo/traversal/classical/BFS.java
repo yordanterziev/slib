@@ -156,12 +156,15 @@ public class BFS implements GraphTraversal {
      * @return List of URIs returns an empty list, if the bfs is done
      * 
      */
-    public List<URI> nextLevel(){
+    public List<ArrayList<URI>> nextLevel(){
     	List<URI> result = new ArrayList<URI>();
+    	List<ArrayList<URI>> listOfV = new ArrayList<ArrayList<URI>>();
+    	int listCounter = 0;
     	if (lvl!=1){
     		queue.addAll(queuenextlvl);
     		queuenextlvl.clear();
     		edgeNext.clear();
+    		
     	} else {
 			queuenextlvl.clear();
 		}
@@ -173,20 +176,9 @@ public class BFS implements GraphTraversal {
 	        Set<URI> vertices = g.getV(src, wc);
 	        Set<E> edges = g.getE(src, wc);
 	        
+	        listOfV.add(this.getVerteciesFromSource(vertices, edges));
 	        
-	        for (URI v : vertices) {
-	        	if (!visited.contains(v) ) { 
-	        		//for (E e : edges){
-	        			//if(e.getSource().equals(src)) {
-	        				//if (e.getTarget().equals(v)) {
-	        					//edgeNext.add(e.getURI());
-	        					queuenextlvl.add(v);
-	        					visited.add(v);
-	        			//	}
-	    	        	//}
-	        		}
-	        	}
-	       // }
+	        listCounter++;
 	        // Edges add Next level
 	        
 	        current = src;
@@ -194,11 +186,29 @@ public class BFS implements GraphTraversal {
 	        result.add(src);
     	}
     	lvl++;
-        return result;
+        return listOfV;
 		
 	}
     
     public int getLevel(){
     	return lvl;
+    }
+    
+    private ArrayList<URI> getVerteciesFromSource(Set<URI> vertices, Set<E> edges){
+    	ArrayList<URI> result = new ArrayList<URI>();
+    	for (URI v : vertices) {
+        	if (!visited.contains(v) ) { 
+        		//for (E e : edges){
+        			//if(e.getSource().equals(src)) {
+        				//if (e.getTarget().equals(v)) {
+        					//edgeNext.add(e.getURI());
+        					queuenextlvl.add(v);
+        					visited.add(v);       					
+        			//	}
+    	        	//}
+        		//}
+        	}
+        }
+    	return result;
     }
 }
