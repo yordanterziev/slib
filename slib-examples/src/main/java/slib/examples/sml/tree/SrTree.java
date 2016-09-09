@@ -1,19 +1,24 @@
 package slib.examples.sml.tree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.openrdf.model.URI;
+
+import slib.graph.model.graph.elements.E;
 
 public class SrTree {
 
 	
 	private int lvl;
 	private SrNode root;
+	private HashMap<URI,SrNode> mapNodes = new HashMap<URI,SrNode>();
 	
 	public SrTree(URI root){
 		this.root = new SrNode(root);
 		lvl=1;
+		mapNodes.put(this.root.getData(), this.root);
 	}
 	
 	public void setRoot(SrNode root){
@@ -47,19 +52,27 @@ public class SrTree {
 		}
 		return result;
 	}
-	public void addElementatLevel(ArrayList<ArrayList<URI>> list, int level){
-		if(level==2){
-			for (int i =0;i<list.get(0).size();i++){
-				root.addChild(new SrNode(list.get(0).get(i)));
-				root.addEdges(list.get(1).get(i));
-			}
-		}
-		else{
-			SrNode current;
-			ArrayList<SrNode> nodeList = this.getAllNodeAt(level-1);
-			for(int i=0; i<nodeList.size();i++){
-				current = nodeList.get(i);
-				
+	public void addElementatLevel(ArrayList<E> list, int level){
+//		if(level==2){
+//			for (int i =0;i<list.size();i++){
+//				root.addChild(new SrNode(list.get(i).getTarget()));
+//				root.addEdges(list.get(i).getURI());
+//			}
+//		}
+//		else{
+//			SrNode current;
+//			ArrayList<SrNode> nodeList = this.getAllNodeAt(level-1);
+//			for(int i=0; i<nodeList.size();i++){
+//				current = nodeList.get(i);
+//				
+//			}
+//		}
+		
+		if (level == 2){
+			for (int i = 0; i<list.size(); i++){
+				SrNode temp = new SrNode(list.get(i).getTarget());
+				root.addChild(temp);
+				mapNodes.put(temp.getData(), temp);
 			}
 		}
 	}

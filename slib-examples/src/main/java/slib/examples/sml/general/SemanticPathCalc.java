@@ -18,6 +18,7 @@ import slib.examples.sml.general.xml.edges.Edges;
 import slib.examples.sml.tree.SrTree;
 import slib.graph.algo.traversal.classical.BFS;
 import slib.graph.model.graph.G;
+import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.Direction;
 import slib.graph.model.graph.utils.WalkConstraint;
 import slib.graph.model.repo.URIFactory;
@@ -86,12 +87,15 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		// TODO Auto-generated method stub
 		// bfs.
 		//System.out.println(bfs.nextLevel().toString());
-		ArrayList<ArrayList<URI>> temp = new ArrayList<ArrayList<URI>>();
+		ArrayList<E> temp = new ArrayList<E>();
 		temp.addAll(bfs.nextLevel());
 		currentTree.addElementatLevel(temp, levelCounter);
+		if (currentTree.getRoot().hasChildren()){
+		System.out.println(currentTree.getRoot().getChildren().get(0).getData().toString());}
+		System.out.println(currentTree.getRoot().getData());
 		// System.out.println(bfs.nexter().toString());
 		// System.out.println(bfs.nexter().toString());
-
+		levelCounter++;
 		return bfs.hasNext();
 	}
 

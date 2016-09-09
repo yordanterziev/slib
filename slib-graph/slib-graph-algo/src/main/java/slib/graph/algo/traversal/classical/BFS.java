@@ -156,9 +156,9 @@ public class BFS implements GraphTraversal {
      * @return List of URIs returns an empty list, if the bfs is done
      * 
      */
-    public List<ArrayList<URI>> nextLevel(){
-    	List<URI> result = new ArrayList<URI>();
-    	List<ArrayList<URI>> listOfV = new ArrayList<ArrayList<URI>>();
+    public ArrayList<E> nextLevel(){
+    	ArrayList<E> result = new ArrayList<E>();
+    	//List<ArrayList<URI>> listOfV = new ArrayList<ArrayList<URI>>();
     	int listCounter = 0;
     	if (lvl!=1){
     		queue.addAll(queuenextlvl);
@@ -176,17 +176,17 @@ public class BFS implements GraphTraversal {
 	        Set<URI> vertices = g.getV(src, wc);
 	        Set<E> edges = g.getE(src, wc);
 	        
-	        listOfV.add(this.getVerteciesFromSource(vertices, edges));
+	        result.addAll(this.getVerteciesFromSource(vertices, edges));
 	        
 	        listCounter++;
 	        // Edges add Next level
 	        
 	        current = src;
 	        
-	        result.add(src);
+	        //result.add(src);
     	}
     	lvl++;
-        return listOfV;
+        return result;
 		
 	}
     
@@ -194,19 +194,20 @@ public class BFS implements GraphTraversal {
     	return lvl;
     }
     
-    private ArrayList<URI> getVerteciesFromSource(Set<URI> vertices, Set<E> edges){
-    	ArrayList<URI> result = new ArrayList<URI>();
+    private ArrayList<E> getVerteciesFromSource(Set<URI> vertices, Set<E> edges){
+    	ArrayList<E> result = new ArrayList<E>();
     	for (URI v : vertices) {
         	if (!visited.contains(v) ) { 
-        		//for (E e : edges){
+        		for (E e : edges){
         			//if(e.getSource().equals(src)) {
-        				//if (e.getTarget().equals(v)) {
+        				if (e.getTarget().equals(v)) {
         					//edgeNext.add(e.getURI());
         					queuenextlvl.add(v);
-        					visited.add(v);       					
-        			//	}
+        					visited.add(v);
+        					result.add(e);
+        				}
     	        	//}
-        		//}
+        		}
         	}
         }
     	return result;
