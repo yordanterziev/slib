@@ -116,7 +116,7 @@ public class SlibRdfHandler implements RDFHandler {
         }
         else if 	 (st.getPredicate().toString().contains("#range")
         			 &&!(st.getObject().toString().contains("node"))
-        			 &&!(st.getObject().toString().contains("XMLSchema#"))
+        			// &&!(st.getObject().toString().contains("XMLSchema#"))
         			 ){
         	hashRange.put( (URI) st.getSubject(),(URI) st.getObject());
         	System.out.println("Range push");

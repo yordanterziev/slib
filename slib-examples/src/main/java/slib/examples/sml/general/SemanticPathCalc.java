@@ -52,7 +52,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private List<String> uEdges;
 	private String ontology;
 	private BFS bfs;
-	private int levelCounter = 1;
+	private int levelCounter = 2;
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
@@ -90,13 +90,13 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		ArrayList<E> temp = new ArrayList<E>();
 		temp.addAll(bfs.nextLevel());
 		currentTree.addElementatLevel(temp, levelCounter);
-		if (currentTree.getRoot().hasChildren()){
-		System.out.println(currentTree.getRoot().getChildren().get(0).getData().toString());}
-		System.out.println(currentTree.getRoot().getData());
+		//if (currentTree.getRoot().hasChildren()){
+		//System.out.println(currentTree.getRoot().getChildren().get(0).getData().toString());}
+		//System.out.println(currentTree.getRoot().getData());
 		// System.out.println(bfs.nexter().toString());
 		// System.out.println(bfs.nexter().toString());
 		levelCounter++;
-		return bfs.hasNext();
+		return bfs.hasNextLevel();
 	}
 
 	@Override
@@ -111,7 +111,8 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		// double ic1 = engine.getIC(icConf, uriA);
 		// double ic2 = engine.getIC(icConf, uriB);
 		measureConf.setICconf(icConf);
-
+		System.out.println(engine.getIC(icConf, uriA));
+		System.out.println(engine.getIC(icConf, uriB));
 		return engine.compare(measureConf, uriA, uriB);
 	}
 

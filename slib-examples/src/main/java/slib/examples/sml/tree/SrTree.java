@@ -74,6 +74,14 @@ public class SrTree {
 				root.addChild(temp);
 				mapNodes.put(temp.getData(), temp);
 			}
+		}else
+		{
+			for (int i = 0; i<list.size(); i++){
+				SrNode temp = new SrNode(list.get(i).getTarget());
+				SrNode parent = mapNodes.get(list.get(i).getSource());
+				parent.addChild(temp);
+				mapNodes.put(temp.getData(), temp);
+			}
 		}
 	}
 	

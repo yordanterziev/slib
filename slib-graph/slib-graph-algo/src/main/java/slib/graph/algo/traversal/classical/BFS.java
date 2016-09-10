@@ -119,7 +119,11 @@ public class BFS implements GraphTraversal {
      */
     @Override
     public boolean hasNext() {
-        return ((queue.isEmpty())&&(queuenextlvl.isEmpty())) == false;
+        return (queue.isEmpty()) == false;
+    }
+    
+    public boolean hasNextLevel(){
+    	return (queuenextlvl.isEmpty() == false);
     }
 
     /**
@@ -166,6 +170,7 @@ public class BFS implements GraphTraversal {
     		edgeNext.clear();
     		
     	} else {
+    		visited.add(queue.get(0));
 			queuenextlvl.clear();
 		}
     	while (!queue.isEmpty()){
@@ -176,8 +181,7 @@ public class BFS implements GraphTraversal {
 	        Set<URI> vertices = g.getV(src, wc);
 	        Set<E> edges = g.getE(src, wc);
 	        
-	        result.addAll(this.getVerteciesFromSource(vertices, edges));
-	        
+	        result.addAll(this.getVerteciesFromSource(vertices, edges, src));
 	        listCounter++;
 	        // Edges add Next level
 	        
@@ -194,19 +198,19 @@ public class BFS implements GraphTraversal {
     	return lvl;
     }
     
-    private ArrayList<E> getVerteciesFromSource(Set<URI> vertices, Set<E> edges){
+    private ArrayList<E> getVerteciesFromSource(Set<URI> vertices, Set<E> edges, URI src){
     	ArrayList<E> result = new ArrayList<E>();
     	for (URI v : vertices) {
         	if (!visited.contains(v) ) { 
         		for (E e : edges){
-        			//if(e.getSource().equals(src)) {
+        			if(e.getSource().equals(src)) {
         				if (e.getTarget().equals(v)) {
         					//edgeNext.add(e.getURI());
         					queuenextlvl.add(v);
         					visited.add(v);
         					result.add(e);
         				}
-    	        	//}
+    	        	}
         		}
         	}
         }

@@ -19,17 +19,20 @@ public class SRComputation {
 		
 		String swrcOntology = "http://swrc.ontoware.org/ontology";
 		String path = "/src/main/resources/swrc_updated_v0.7.1.owl";
-		String origin = "#Person";
+		String origin = "#Student";
 		URIFactory factory = URIFactoryMemory.getSingleton();
 		SemanticRelatednes test = new SemanticPathCalc(swrcOntology,path);
 		test.setOrigin(factory.getURI(swrcOntology+origin));
 		
 		test.initialiseWalk("Edge.xml");
-		test.hasNext();
-		test.hasNext();
+		System.out.println(test.hasNext());
+		System.out.println(test.hasNext());
+		System.out.println(test.hasNext());
+		System.out.println(test.hasNext());
 		System.out.println("runde");
 		
-		System.out.println(test.getSemanticRelatedness(factory.getURI(swrcOntology+origin), factory.getURI(swrcOntology+"#Student")));
+		
+		System.out.println(test.getSemanticRelatedness(factory.getURI(swrcOntology+origin), factory.getURI(swrcOntology+"#Organization")));
 		//commit
 		
         
