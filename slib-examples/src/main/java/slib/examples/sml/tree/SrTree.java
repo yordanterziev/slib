@@ -52,6 +52,16 @@ public class SrTree {
 		}
 		return result;
 	}
+	
+	public void removeNode(URI data){
+		SrNode temp = mapNodes.get(data);
+		SrNode parent = temp.getParent();
+		int positon = parent.getChildren().indexOf(data);
+		parent.removeChildAt(positon);
+		mapNodes.remove(data);
+	}
+	
+	
 	public void addElementatLevel(ArrayList<E> list, int level){
 //		if(level==2){
 //			for (int i =0;i<list.size();i++){
@@ -72,6 +82,8 @@ public class SrTree {
 			for (int i = 0; i<list.size(); i++){
 				SrNode temp = new SrNode(list.get(i).getTarget());
 				root.addChild(temp);
+				root.addEdges(list.get(i).getURI());
+				temp.setParent(root);
 				mapNodes.put(temp.getData(), temp);
 			}
 		}else
@@ -79,7 +91,9 @@ public class SrTree {
 			for (int i = 0; i<list.size(); i++){
 				SrNode temp = new SrNode(list.get(i).getTarget());
 				SrNode parent = mapNodes.get(list.get(i).getSource());
+				temp.setParent(parent);
 				parent.addChild(temp);
+				parent.addEdges(list.get(i).getURI());
 				mapNodes.put(temp.getData(), temp);
 			}
 		}

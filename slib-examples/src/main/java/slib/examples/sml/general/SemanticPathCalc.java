@@ -58,7 +58,8 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
 	private SrTree currentTree;
 	private List<SrTree> treeList;
-
+	
+	
 	/**
 	 * This constructor uses {@link OntologyCreator} in order to create a graph
 	 * filled with an ontology.
@@ -113,6 +114,14 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		measureConf.setICconf(icConf);
 		System.out.println(engine.getIC(icConf, uriA));
 		System.out.println(engine.getIC(icConf, uriB));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#ResearchGroup")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Student")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Graduate")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#University")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Employee")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Publication")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Misc")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Thing")));
 		return engine.compare(measureConf, uriA, uriB);
 	}
 
