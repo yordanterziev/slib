@@ -163,7 +163,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
 		wc.addWalkconstraints(new WalkConstraintGeneric(map));
 		bfs = new BFS(graph, origin, wc);
-		currentTree = new SrTree(origin);
+		currentTree = new SrTree(origin,uEdges,dEdges,hEdges);
 	}
 
 	@Override

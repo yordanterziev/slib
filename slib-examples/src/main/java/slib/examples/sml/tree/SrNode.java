@@ -10,6 +10,7 @@ public class SrNode {
 	private SrNode parent;
 	private ArrayList<SrNode> children;
 	private ArrayList<URI> childrenEdges;
+	private String semanticRelatedness;
 
 	public SrNode(URI data) {
 		this.setData(data);
@@ -29,6 +30,14 @@ public class SrNode {
 
 	public void setParent(SrNode parent) {
 		this.parent = parent;
+	}
+
+	public String getSemanticRelatedness() {
+		return semanticRelatedness;
+	}
+
+	public void setSemanticRelatedness(String semanticRelatedness) {
+		this.semanticRelatedness = semanticRelatedness;
 	}
 
 	public ArrayList<SrNode> getChildren() {
@@ -73,23 +82,5 @@ public class SrNode {
 		childrenEdges.add(edge);
 	}
 
-	public void instertChildAt(int index, SrNode child) {
-		if (!this.hasChildren()) {
-			this.addChild(child);
-		} else if ((this.hasChildren()) & (index >= this.getNumberOfChildren())) {
-			children.get(children.size() - 1).addChild(child);
-		} else if ((this.hasChildren()) & (index < this.getNumberOfChildren())) {
-			children.get(index).addChild(child);
-		}
-	}
-
-	public void removeChildAt(int index) {
-		if (!this.hasChildren()) {
-			System.out.println("Has no children");
-		} else if ((this.hasChildren()) & (index >= this.getNumberOfChildren())) {
-			children.remove(children.size() - 1);
-		} else if ((this.hasChildren()) & (index < this.getNumberOfChildren())) {
-			children.remove(index);
-		}
-	}
+	
 }
