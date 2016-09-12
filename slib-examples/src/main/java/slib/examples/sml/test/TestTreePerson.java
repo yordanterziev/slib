@@ -15,7 +15,13 @@ public class TestTreePerson  {
 	String path = "/src/main/resources/swrc_updated_v0.7.1.owl";
 	String origin = "#Person";
 	URIFactory factory = URIFactoryMemory.getSingleton();
-	SemanticPathCalc spc = new SemanticPathCalc();
+	{
+	try {
+		SemanticPathCalc spc = new SemanticPathCalc(origin,path);
+	} catch (SLIB_Exception name) {}
+
+	}
+	
 	
 	
 	
