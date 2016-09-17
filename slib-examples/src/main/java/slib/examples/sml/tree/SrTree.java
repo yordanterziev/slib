@@ -9,6 +9,15 @@ import org.openrdf.model.URI;
 
 import slib.graph.model.graph.elements.E;
 
+/**
+ * This class builds a tree structure containing a semantic correct path through an ontology.
+ * It contains Nodes of the class {@link SrNode}. The tree maintains the semantic correct path by removing the incorrect Node immediately.
+ * All nodes can be accessed instantly via a HashMap, because the tree is likely to be unbalanced.
+ * The tree does not take care of duplicate values and cycles.
+ * 
+ * @author Florian Jakobs
+ *
+ */
 public class SrTree {
 
 	
@@ -22,6 +31,14 @@ public class SrTree {
 	
 	
 	
+	/**
+	 * Creates the tree by setting a root and the lists of Upward, Downward and Horizontal Edges.
+	 * 
+	 * @param root root of the tree
+	 * @param uEdges list of upward edges.
+	 * @param dEdges list of downward edges.
+	 * @param hEdges list of horizontal edges.
+	 */
 	public SrTree(URI root,List<String> uEdges,List<String> dEdges,List<String> hEdges){
 		this.root = new SrNode(root);
 		lvl=1;
@@ -56,6 +73,13 @@ public class SrTree {
 		return result;
 	}
 	
+	
+	
+	/**
+	 * Removes the given Node.
+	 * The entire tree will be removed, if the root is given.
+	 * @param data URI of the given Node
+	 */
 	public void removeNode(URI data){
 		if (data.equals(root.getData())){
 			root = null;
@@ -63,28 +87,27 @@ public class SrTree {
 		}
 		SrNode temp = mapNodes.get(data);
 		SrNode parent = temp.getParent();
-		int position=-1;
-		for (int i = 0; i<parent.getChildren().size();i++){
-			if (parent.getChildren().get(i).getData().getLocalName().equals(data.getLocalName())){
-				position = i;
-			}
-		};
-		if (position!=-1){
-		parent.getChildren().remove(position);
-		mapNodes.remove(data);}
-		else{
-			System.out.println("Nicht gefunden");
-		}
+		parent.getChildren().remove(temp);
 	}
 	
 	
+	/**
+	 * Adds Elements to the tree. The Elements are retrieved from a List of Edges.
+	 * Data is set to target.
+	 * Parent is set to source.
+	 * Maps are maintained
+	 * The semantic path is extended.
+	 * 
+	 * @param list list of Edges 
+	 * @param level at which the children are put.
+	 */
 	public void addElementatLevel(ArrayList<E> list, int level){
 		if (level == 2){
 			for (int i = 0; i<list.size(); i++){
 				E edge= list.get(i);
 				SrNode temp = new SrNode(edge.getTarget());
 				root.addChild(temp);
-				root.addEdges(edge.getURI());
+				root.addEdges(edge.getURI(),edge.getTarget());
 				
 				temp.setParent(root);
 				mapNodes.put(temp.getData(), temp);
@@ -108,7 +131,7 @@ public class SrTree {
 					SrNode parent = mapNodes.get(edge.getSource());
 					temp.setParent(parent);
 					parent.addChild(temp);
-					parent.addEdges(edge.getURI());
+					parent.addEdges(edge.getURI(),edge.getTarget());
 					
 					mapNodes.put(temp.getData(), temp);
 					mapLevel.put(temp, level);

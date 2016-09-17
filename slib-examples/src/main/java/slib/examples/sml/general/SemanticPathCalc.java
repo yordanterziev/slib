@@ -53,9 +53,12 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private String ontology;
 	private BFS bfs;
 	private int levelCounter = 2;
+	
 	// Method for calculating the IC
-	private ICconf icConf = new IC_Conf_Topo("RESNIK", SMConstants.FLAG_ICI_RESNIK_1995);
+	private ICconf icConf = new IC_Conf_Topo("SANCHEZ", SMConstants.FLAG_ICI_SANCHEZ_2011);
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
+	
+	//Resulting Tree
 	private SrTree currentTree;
 	private List<SrTree> treeList;
 	

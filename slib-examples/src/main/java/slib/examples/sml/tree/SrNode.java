@@ -1,17 +1,32 @@
 package slib.examples.sml.tree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.openrdf.model.URI;
 
+/**
+ * This class contains the information of {@link SrTree}.
+ * A Node contains a Set of children, thus the children are unique.
+ * It contains a parent for faster accessing other children of the same parent.
+ * It also stores a mapping of edges to targets.
+ * A Node also contains a string of characters containing the semantic Path up to the given node.
+ * 
+ * @author Florian Jakobs
+ *
+ */
 public class SrNode {
 
 	private URI data;
 	private SrNode parent;
-	private ArrayList<SrNode> children;
+	private Set<SrNode> children;
 	private ArrayList<URI> childrenEdges;
 	private String semanticRelatedness;
-
+	//Hashmap<Edge,Target>
+	private HashMap<URI,URI> edgeMap;
+	
 	public SrNode(URI data) {
 		this.setData(data);
 	}
@@ -40,7 +55,15 @@ public class SrNode {
 		this.semanticRelatedness = semanticRelatedness;
 	}
 
-	public ArrayList<SrNode> getChildren() {
+	public HashMap<URI, URI> getEdgeMap() {
+		return edgeMap;
+	}
+
+	public void setEdgeMap(HashMap<URI, URI> edgeMap) {
+		this.edgeMap = edgeMap;
+	}
+
+	public Set<SrNode> getChildren() {
 		if (this.hasChildren()) {
 			return children;
 		} else {
@@ -57,7 +80,7 @@ public class SrNode {
 	}
 
 	public boolean hasChildrenEdges() {
-		return (childrenEdges != null);
+		return (edgeMap != null);
 	}
 
 	public int getNumberOfChildren() {
@@ -70,16 +93,16 @@ public class SrNode {
 
 	public void addChild(SrNode child) {
 		if (!this.hasChildren()) {
-			children = new ArrayList<SrNode>();
+			children = new HashSet<SrNode>();
 		}
 		children.add(child);
 	}
 	
-	public void addEdges(URI edge) {
+	public void addEdges(URI edge,URI target) {
 		if (!this.hasChildrenEdges()) {
-			childrenEdges = new ArrayList<URI>();
+			edgeMap = new HashMap<URI,URI>();
 		}
-		childrenEdges.add(edge);
+		edgeMap.put(edge,target);
 	}
 
 	
