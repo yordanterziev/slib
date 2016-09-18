@@ -29,6 +29,8 @@ public class SrTree {
 	private List<String> dEdges = new ArrayList<String>();
 	private List<String> uEdges = new ArrayList<String>();
 	
+	private static ArrayList<String> correctPaths = new ArrayList<String>();
+	
 	
 	
 	/**
@@ -47,6 +49,20 @@ public class SrTree {
 		this.uEdges.addAll(uEdges);
 		this.dEdges.addAll(dEdges);
 		this.hEdges.addAll(hEdges);
+		correctPaths.add("U");
+		correctPaths.add("UU");
+		correctPaths.add("UUU");
+		correctPaths.add("UD");
+		correctPaths.add("UH");
+		correctPaths.add("UHD");
+		correctPaths.add("D");
+		correctPaths.add("DD");
+		correctPaths.add("DDD");
+		correctPaths.add("DH");
+		correctPaths.add("HD");
+		correctPaths.add("H");
+		correctPaths.add("HH");
+		correctPaths.add("HHH");
 	}
 	
 	public void setRoot(SrNode root){
@@ -63,15 +79,15 @@ public class SrTree {
 		return list;
 	}
 	
-	private ArrayList<SrNode> getAllNodeAt(int level){
-		ArrayList<SrNode> result = new ArrayList<SrNode>();
-		for(Map.Entry<SrNode,Integer> entry : mapLevel.entrySet()){
-			if(entry.getValue()==level){
-				result.add(entry.getKey());
-			}
-		};
-		return result;
-	}
+//	private ArrayList<SrNode> getAllNodeAt(int level){
+//		ArrayList<SrNode> result = new ArrayList<SrNode>();
+//		for(Map.Entry<SrNode,Integer> entry : mapLevel.entrySet()){
+//			if(entry.getValue()==level){
+//				result.add(entry.getKey());
+//			}
+//		};
+//		return result;
+//	}
 	
 	
 	
@@ -88,6 +104,7 @@ public class SrTree {
 		SrNode temp = mapNodes.get(data);
 		SrNode parent = temp.getParent();
 		parent.getChildren().remove(temp);
+		mapNodes.remove(temp);
 	}
 	
 	
@@ -120,6 +137,7 @@ public class SrTree {
 					temp.setSemanticRelatedness("H");
 				}
 			}
+			lvl++;
 		}else
 		{
 			for (int i = 0; i<list.size(); i++){
@@ -130,11 +148,6 @@ public class SrTree {
 					SrNode temp = new SrNode(list.get(i).getTarget());
 					SrNode parent = mapNodes.get(edge.getSource());
 					temp.setParent(parent);
-					parent.addChild(temp);
-					parent.addEdges(edge.getURI(),edge.getTarget());
-					
-					mapNodes.put(temp.getData(), temp);
-					mapLevel.put(temp, level);
 					if (uEdges.contains(edge.getURI().getLocalName())){
 						temp.setSemanticRelatedness(parent.getSemanticRelatedness()+ "U");
 					}else if (dEdges.contains(edge.getURI().getLocalName())){
@@ -142,13 +155,33 @@ public class SrTree {
 					}else{
 						temp.setSemanticRelatedness(parent.getSemanticRelatedness()+"H");
 					}
+					
+					if (isSemanticCorrect(temp) == true){
+						parent.addChild(temp);
+						parent.addEdges(edge.getURI(),edge.getTarget());
+					
+						mapNodes.put(temp.getData(), temp);
+						mapLevel.put(temp, level);
+					}
 				}
 			}
+			lvl++;
 		}
 	}
 	
-	public void addSemanticReladedness(int level){
-		
+	private static boolean isSemanticCorrect(SrNode node){
+		boolean result = false;
+		String path = node.getSemanticRelatedness();
+		if (path.length() > 3) {
+			  path = path.substring(path.length() - 3);
+		}
+		for (int i = 0; i<= correctPaths.size();i++){
+			result = correctPaths.get(i).equals(path);
+			if (result = true){
+				break;
+			}
+		}
+		return result;
 	}
 	
 }

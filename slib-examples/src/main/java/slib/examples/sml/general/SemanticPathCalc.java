@@ -52,7 +52,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private List<String> uEdges;
 	private String ontology;
 	private BFS bfs;
-	private int levelCounter = 2;
+	private int levelCounter = 1;
 	
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("SANCHEZ", SMConstants.FLAG_ICI_SANCHEZ_2011);
@@ -60,7 +60,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	
 	//Resulting Tree
 	private SrTree currentTree;
-	private List<SrTree> treeList;
+	private List<SrTree> treeList = new ArrayList<SrTree>();
 	
 	
 	/**
@@ -89,17 +89,6 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	@Override
 	public boolean hasNext() {
 		// TODO Auto-generated method stub
-		// bfs.
-		//System.out.println(bfs.nextLevel().toString());
-		ArrayList<E> temp = new ArrayList<E>();
-		temp.addAll(bfs.nextLevel());
-		currentTree.addElementatLevel(temp, levelCounter);
-		//if (currentTree.getRoot().hasChildren()){
-		//System.out.println(currentTree.getRoot().getChildren().get(0).getData().toString());}
-		//System.out.println(currentTree.getRoot().getData());
-		// System.out.println(bfs.nexter().toString());
-		// System.out.println(bfs.nexter().toString());
-		levelCounter++;
 		return bfs.hasNextLevel();
 	}
 
@@ -124,7 +113,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Employee")));
 		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Publication")));
 		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Misc")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Thing")));
+		//System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Thing")));
 		return engine.compare(measureConf, uriA, uriB);
 	}
 
@@ -174,6 +163,23 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		// TODO Auto-generated method stub
 		this.loadEdges(file);
 		this.loadBFS();
+	}
+
+	@Override
+	public List<SrTree> getSemanticallyCorrectPaths(int hops) {
+		// TODO Auto-generated method stub
+		if(bfs.hasNextLevel()){
+			if(hops ==1){
+				treeList.add(currentTree);
+			}else{
+				ArrayList<E> temp = new ArrayList<E>();
+				temp.addAll(bfs.nextLevel());
+				levelCounter++;
+				currentTree.addElementatLevel(temp, levelCounter);
+				treeList.add(currentTree);
+			}
+		}
+		return treeList;
 	}
 
 }

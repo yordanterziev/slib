@@ -7,6 +7,7 @@ import javax.xml.bind.JAXBException;
 
 import org.openrdf.model.URI;
 
+import slib.examples.sml.tree.SrTree;
 import slib.utils.ex.SLIB_Exception;
 
 /**
@@ -35,7 +36,7 @@ public interface SemanticRelatednes {
 
 	
 	//We need a suitable data structure
-	//public List<Tree> getSemanticallyCorrectPaths(int hops);
+	public List<SrTree> getSemanticallyCorrectPaths(int hops);
 
 	
 	/**
