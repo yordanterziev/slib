@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
@@ -28,7 +30,7 @@ public class TestTreePerson  {
 	@Before
 	public void fillTree(){
 	SrNode event = new SrNode(factory.getURI(swrcOntology+"#Event"));
-	SrNode organization = new SrNode(factory.getURI(swrcOntology+"#Organiziation"));
+	SrNode organization = new SrNode(factory.getURI(swrcOntology+"#Organization"));
 	SrNode project = new SrNode(factory.getURI(swrcOntology+"#Project"));
 	SrNode thing = new SrNode(factory.getURI("http://www.w3.org/2002/07/owl#Thing"));
 	SrNode researchGroup = new SrNode(factory.getURI(swrcOntology+"#ResearchGroup"));
@@ -55,7 +57,31 @@ public class TestTreePerson  {
 			hops++;
 		}
 		SrTree tree = treeList.get(treeList.size()-1);
-		boolean correct = tree.getRoot().getChildren().equals(result.getRoot().getChildren());
+		SrNode treeRoot = tree.getRoot();
+		boolean correct = false;
+		int counter = 0;
+		HashSet<SrNode> setTest = new HashSet<SrNode>();
+		HashSet<SrNode> setCheck = new HashSet<SrNode>();
+		setTest.addAll(treeRoot.getChildren());
+		setCheck.addAll(result.getRoot().getChildren());
+		System.out.println(setTest.size());
+		System.out.println(setCheck.size());
+		for(SrNode nodeTest : setTest){
+			for(SrNode nodeCheck : setCheck){
+				if (nodeCheck.getData().getLocalName().equals(nodeTest.getData().getLocalName())){
+					counter++;
+				}
+			}
+		}
+		for(SrNode nodeCheck : setCheck){
+			System.out.println(nodeCheck.getData().getLocalName());
+		}
+		for(SrNode nodeCheck : setTest){
+			System.out.println(nodeCheck.getData().getLocalName());
+		}
+		if (counter == 5){
+			correct = true;
+		}
 		assertTrue("Tree is not correct", correct);
 		
 		}

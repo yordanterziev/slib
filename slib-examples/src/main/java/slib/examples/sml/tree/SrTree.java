@@ -52,14 +52,29 @@ public class SrTree {
 		correctPaths.add("U");
 		correctPaths.add("UU");
 		correctPaths.add("UUU");
+		
 		correctPaths.add("UD");
+		correctPaths.add("UUD");
+		correctPaths.add("UDD");
+		
 		correctPaths.add("UH");
+		correctPaths.add("UUH");
+		correctPaths.add("UHH");
+		
 		correctPaths.add("UHD");
+		
 		correctPaths.add("D");
 		correctPaths.add("DD");
 		correctPaths.add("DDD");
+		
 		correctPaths.add("DH");
+		correctPaths.add("DDH");
+		correctPaths.add("DHH");
+		
 		correctPaths.add("HD");
+		correctPaths.add("HHD");
+		correctPaths.add("HDD");
+		
 		correctPaths.add("H");
 		correctPaths.add("HH");
 		correctPaths.add("HHH");
