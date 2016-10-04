@@ -9,8 +9,8 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
+
 
 import slib.examples.sml.general.SemanticPathCalc;
 import slib.graph.model.impl.repo.URIFactoryMemory;
@@ -52,10 +52,7 @@ public class TestTreePerson  {
 		spc.setOrigin(factory.getURI(swrcOntology+origin));
 		spc.initialiseWalk("Edge.xml");
 		ArrayList<SrTree> treeList = new ArrayList<SrTree>();
-		while (spc.hasNext()){
-			treeList.add(spc.getSemanticallyCorrectPaths(hops).get(hops-1));
-			hops++;
-		}
+
 		SrTree tree = treeList.get(treeList.size()-1);
 		SrNode treeRoot = tree.getRoot();
 		boolean correct = false;

@@ -1,6 +1,8 @@
 package slib.examples.sml.general;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -8,6 +10,7 @@ import javax.xml.bind.JAXBException;
 import org.openrdf.model.URI;
 
 import slib.examples.sml.tree.SrTree;
+import slib.graph.model.graph.elements.E;
 import slib.utils.ex.SLIB_Exception;
 
 /**
@@ -36,7 +39,7 @@ public interface SemanticRelatednes {
 
 	
 	//We need a suitable data structure
-	public List<SrTree> getSemanticallyCorrectPaths(int hops);
+	public HashMap<URI, ArrayList<E>> getSemanticallyCorrectPaths(int hops);
 
 	
 	/**

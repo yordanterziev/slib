@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -15,8 +16,8 @@ import org.openrdf.model.URI;
 import org.openrdf.model.vocabulary.RDFS;
 
 import slib.examples.sml.general.xml.edges.Edges;
-import slib.examples.sml.tree.SrTree;
 import slib.graph.algo.traversal.classical.BFS;
+import slib.graph.algo.traversal.classical.BFSLevel;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.Direction;
@@ -47,22 +48,17 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private URIFactory uriFactory;
 	private URI origin;
 	private JAXBContext edgeCategory;
-	private List<String> hEdges;
-	private List<String> dEdges;
-	private List<String> uEdges;
+	private static List<String> hEdges;
+	private static List<String> dEdges;
+	private static List<String> uEdges;
+	private static ArrayList<String> correctPaths = new ArrayList<String>();
 	private String ontology;
-	private BFS bfs;
-	private int levelCounter = 1;
-	
+	private BFSLevel bfs;
+
 	// Method for calculating the IC
 	private ICconf icConf = new IC_Conf_Topo("SANCHEZ", SMConstants.FLAG_ICI_SANCHEZ_2011);
 	private SMconf measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
-	
-	//Resulting Tree
-	private SrTree currentTree;
-	private List<SrTree> treeList = new ArrayList<SrTree>();
-	
-	
+
 	/**
 	 * This constructor uses {@link OntologyCreator} in order to create a graph
 	 * filled with an ontology.
@@ -80,6 +76,36 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		graph = oc.getGraph();
 		engine = oc.getEngine();
 		uriFactory = oc.getFactory();
+
+		correctPaths.add("U");
+		correctPaths.add("UU");
+		correctPaths.add("UUU");
+
+		correctPaths.add("UD");
+		correctPaths.add("UUD");
+		correctPaths.add("UDD");
+
+		correctPaths.add("UH");
+		correctPaths.add("UUH");
+		correctPaths.add("UHH");
+
+		correctPaths.add("UHD");
+
+		correctPaths.add("D");
+		correctPaths.add("DD");
+		correctPaths.add("DDD");
+
+		correctPaths.add("DH");
+		correctPaths.add("DDH");
+		correctPaths.add("DHH");
+
+		correctPaths.add("HD");
+		correctPaths.add("HHD");
+		correctPaths.add("HDD");
+
+		correctPaths.add("H");
+		correctPaths.add("HH");
+		correctPaths.add("HHH");
 	}
 
 	public G getGraph() {
@@ -106,14 +132,15 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		measureConf.setICconf(icConf);
 		System.out.println(engine.getIC(icConf, uriA));
 		System.out.println(engine.getIC(icConf, uriB));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#ResearchGroup")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Student")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Graduate")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#University")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Employee")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Publication")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Misc")));
-		//System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology+"#Thing")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#ResearchGroup")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Student")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Graduate")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#University")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Employee")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Publication")));
+		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Misc")));
+		// System.out.println(engine.getIC(icConf,
+		// uriFactory.getURI(ontology+"#Thing")));
 		return engine.compare(measureConf, uriA, uriB);
 	}
 
@@ -154,8 +181,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		}
 		WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
 		wc.addWalkconstraints(new WalkConstraintGeneric(map));
-		bfs = new BFS(graph, origin, wc);
-		currentTree = new SrTree(origin,uEdges,dEdges,hEdges);
+		bfs = new BFSLevel(graph, origin, wc);
 	}
 
 	@Override
@@ -166,20 +192,59 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public List<SrTree> getSemanticallyCorrectPaths(int hops) {
+	public HashMap<URI, ArrayList<E>> getSemanticallyCorrectPaths(int hops) {
 		// TODO Auto-generated method stub
-		if(bfs.hasNextLevel()){
-			if(hops ==1){
-				treeList.add(currentTree);
-			}else{
-				ArrayList<E> temp = new ArrayList<E>();
-				temp.addAll(bfs.nextLevel());
-				levelCounter++;
-				currentTree.addElementatLevel(temp, levelCounter);
-				treeList.add(currentTree);
+		HashMap<URI, ArrayList<ArrayList<E>>> temp = bfs.LevelSearch(hops);
+
+		temp = removeIncorrectPaths(temp);
+
+		return new HashMap<URI, ArrayList<E>>();
+	}
+
+	private static HashMap<URI, ArrayList<ArrayList<E>>> removeIncorrectPaths(
+			HashMap<URI, ArrayList<ArrayList<E>>> URIMap) {
+		HashMap<URI, ArrayList<ArrayList<E>>> resultMap = new HashMap<URI, ArrayList<ArrayList<E>>>(); // result
+		// iterating over Entries
+		for (Entry<URI, ArrayList<ArrayList<E>>> entry : URIMap.entrySet()) {
+			ArrayList<ArrayList<E>> newCorrectPaths = new ArrayList<ArrayList<E>>();
+			// Iterating over All Paths for each Entry
+			for (int i = 0; i < entry.getValue().size(); i++) {
+				ArrayList<E> path = entry.getValue().get(i);
+				String semanticPath = "";
+				// Adding Semantic Path
+				for (int j = 0; i < path.size(); j++) {
+					E edge = path.get(j);
+					if (uEdges.contains(edge.getURI().getLocalName())) {
+						semanticPath = semanticPath + "U";
+					} else if (dEdges.contains(edge.getURI().getLocalName())) {
+						semanticPath = semanticPath + "D";
+					} else {
+						semanticPath = semanticPath + "H";
+					}
+				}
+				// Adding a correct Path to List
+				if (isSemanticCorrect(semanticPath)) {
+					newCorrectPaths.add(path);
+				}
+			}
+			// Adding all correctPaths to result Map
+			resultMap.put(entry.getKey(), newCorrectPaths);
+		}
+		return resultMap;
+	}
+
+	private static boolean isSemanticCorrect(String path) {
+		boolean result = false;
+		if (path.length() > 3) {
+			path = path.substring(path.length() - 3);
+		}
+		for (int i = 0; i <= correctPaths.size(); i++) {
+			result = correctPaths.get(i).equals(path);
+			if (result = true) {
+				break;
 			}
 		}
-		return treeList;
+		return result;
 	}
 
 }
