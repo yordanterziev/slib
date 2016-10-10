@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
+import slib.graph.algo.utils.SemanticPath;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.WalkConstraint;
@@ -40,8 +41,8 @@ public class BFSLevel {
     	return (queuenextlvl.isEmpty() == false);
     }
     
-    public HashMap<URI,ArrayList<ArrayList<E>>> LevelSearch(int hops){
-    	HashMap<URI,ArrayList<ArrayList<E>>> result = new HashMap<URI,ArrayList<ArrayList<E>>>();
+    public HashMap<URI,ArrayList<SemanticPath>> LevelSearch(int hops){
+    	HashMap<URI,ArrayList<SemanticPath>> result = new HashMap<URI,ArrayList<SemanticPath>>();
     	ArrayList<URI> queue = new ArrayList<URI>(queuenextlvl);
     	//List<ArrayList<URI>> listOfV = new ArrayList<ArrayList<URI>>();
     	int listCounter = 0;

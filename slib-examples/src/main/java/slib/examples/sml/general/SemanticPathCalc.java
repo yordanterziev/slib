@@ -18,6 +18,7 @@ import org.openrdf.model.vocabulary.RDFS;
 import slib.examples.sml.general.xml.edges.Edges;
 import slib.graph.algo.traversal.classical.BFS;
 import slib.graph.algo.traversal.classical.BFSLevel;
+import slib.graph.algo.utils.SemanticPath;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.Direction;
@@ -194,22 +195,23 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	@Override
 	public HashMap<URI, ArrayList<E>> getSemanticallyCorrectPaths(int hops) {
 		// TODO Auto-generated method stub
-		HashMap<URI, ArrayList<ArrayList<E>>> temp = bfs.LevelSearch(hops);
+		HashMap<URI, ArrayList<SemanticPath>> temp = bfs.LevelSearch(hops);
 
 		temp = removeIncorrectPaths(temp);
 
 		return new HashMap<URI, ArrayList<E>>();
 	}
 
-	private static HashMap<URI, ArrayList<ArrayList<E>>> removeIncorrectPaths(
-			HashMap<URI, ArrayList<ArrayList<E>>> URIMap) {
-		HashMap<URI, ArrayList<ArrayList<E>>> resultMap = new HashMap<URI, ArrayList<ArrayList<E>>>(); // result
+	private static HashMap<URI, ArrayList<SemanticPath>> removeIncorrectPaths(
+			HashMap<URI, ArrayList<SemanticPath>> temp) {
+		HashMap<URI, ArrayList<SemanticPath>> resultMap = new HashMap<URI, ArrayList<SemanticPath>>(); // result
 		// iterating over Entries
-		for (Entry<URI, ArrayList<ArrayList<E>>> entry : URIMap.entrySet()) {
-			ArrayList<ArrayList<E>> newCorrectPaths = new ArrayList<ArrayList<E>>();
+		for (Entry<URI, ArrayList<SemanticPath>> entry : temp.entrySet()) {
+			ArrayList<SemanticPath> newCorrectPaths = new ArrayList<SemanticPath>();
 			// Iterating over All Paths for each Entry
 			for (int i = 0; i < entry.getValue().size(); i++) {
-				ArrayList<E> path = entry.getValue().get(i);
+				SemanticPath pathClass = entry.getValue().get(i);
+				ArrayList<E> path = pathClass.getPath();
 				String semanticPath = "";
 				// Adding Semantic Path
 				for (int j = 0; i < path.size(); j++) {
@@ -224,7 +226,8 @@ public class SemanticPathCalc implements SemanticRelatednes {
 				}
 				// Adding a correct Path to List
 				if (isSemanticCorrect(semanticPath)) {
-					newCorrectPaths.add(path);
+					pathClass.setSemanticPath(semanticPath);
+					newCorrectPaths.add(pathClass);
 				}
 			}
 			// Adding all correctPaths to result Map
