@@ -41,67 +41,65 @@ import java.util.Set;
  * 
  * @author Sébastien Harispe (sebastien.harispe@gmail.com)
  */
-public class MeshConcept{
-    
-    String descriptorUI;
-    String descriptorName;
-    Set<String> treeNumberList;
-    
-    /**
-     *
-     */
-    public MeshConcept(){
-        treeNumberList = new HashSet<String>();
-    }
+public class MeshConcept {
 
-    /**
-     *
-     * @return the descriptor
-     */
-    public String getDescriptorUI() {
-        return descriptorUI;
-    }
+	String descriptorUI;
+	String descriptorName;
+	Set<String> treeNumberList;
 
-    /**
-     *
-     * @param descriptorUI
-     */
-    public void setDescriptorUI(String descriptorUI) {
-        this.descriptorUI = descriptorUI;
-    }
+	/**
+	 *
+	 */
+	public MeshConcept() {
+		treeNumberList = new HashSet<String>();
+	}
 
-    /**
-     *
-     * @return the name of the descriptor.
-     */
-    public String getDescriptorName() {
-        return descriptorName;
-    }
+	/**
+	 *
+	 * @return the descriptor
+	 */
+	public String getDescriptorUI() {
+		return descriptorUI;
+	}
 
-    /**
-     *
-     * @param descriptorName
-     */
-    public void setDescriptorName(String descriptorName) {
-        this.descriptorName = descriptorName;
-    }
-    
-    
-    /**
-     *
-     * @param treeNumber
-     */
-    public void addTreeNumber(String treeNumber){
-        treeNumberList.add(treeNumber);
-    }
-    
-    @Override
-    public String toString(){
-        String out = descriptorUI +"\n";
-        out += "\t"+descriptorName+"\n";
-        out += "\t"+treeNumberList+"\n";
-        return out;
-    }
-    
-    
+	/**
+	 *
+	 * @param descriptorUI
+	 */
+	public void setDescriptorUI(String descriptorUI) {
+		this.descriptorUI = descriptorUI;
+	}
+
+	/**
+	 *
+	 * @return the name of the descriptor.
+	 */
+	public String getDescriptorName() {
+		return descriptorName;
+	}
+
+	/**
+	 *
+	 * @param descriptorName
+	 */
+	public void setDescriptorName(String descriptorName) {
+		this.descriptorName = descriptorName;
+	}
+
+	/**
+	 *
+	 * @param treeNumber
+	 */
+	public void addTreeNumber(String treeNumber) {
+		treeNumberList.add(treeNumber);
+	}
+
+	@Override
+	public String toString() {
+		String out = descriptorUI + "\n";
+		out += "\t" + descriptorName + "\n";
+		out += "\t" + treeNumberList + "\n";
+		return out;
+	}
+
 }

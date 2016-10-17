@@ -16,82 +16,112 @@ import slib.graph.model.graph.utils.WalkConstraint;
 import slib.utils.impl.SetUtils;
 
 public class BFSLevel {
-    G g;
-    private WalkConstraint wc;
-    URI current;
-    List<URI> queuenextlvl;
-    Set<URI> visited;
-    
-    public BFSLevel(G g, Set<URI> sources, WalkConstraint wc) {
+	G g;
+	private WalkConstraint wc;
+	URI current;
+	List<URI> queuenextlvl;
+	Set<URI> visited;
 
-        this.g = g;
-        this.wc = wc;
+	public BFSLevel(G g, Set<URI> sources, WalkConstraint wc) {
 
-        this.queuenextlvl = new ArrayList<URI>(sources);
+		this.g = g;
+		this.wc = wc;
 
-        visited = new HashSet<URI>();
-        visited.addAll(sources);
+		this.queuenextlvl = new ArrayList<URI>(sources);
 
-    }
-    
-    public BFSLevel(G g, URI source, WalkConstraint wc) {
-        this(g, SetUtils.buildSet(source), wc);
-    }
-    
-    public boolean hasNextLevel(){
-    	return (queuenextlvl.isEmpty() == false);
-    }
-    
-    public HashMap<URI,ArrayList<SemanticPath>> LevelSearch(int hops){
-    	HashMap<URI,ArrayList<SemanticPath>> result = new HashMap<URI,ArrayList<SemanticPath>>();
-    	HashMap<Integer,ArrayList<Target>> hopMap = new HashMap<Integer,ArrayList<Target>>();
-    	//List<ArrayList<URI>> listOfV = new ArrayList<ArrayList<URI>>();
-    	int listCounter = 0;
-//    	queue.addAll(queuenextlvl);
-//    	queuenextlvl.clear();
-    	for(int i = 0;i<hops;i++){
-    		if(i==0){
-		    	while (!queuenextlvl.isEmpty()){
-					URI src = queuenextlvl.get(0);
-			        queuenextlvl.remove(0);
-			        
-			
-			        Set<URI> vertices = g.getV(src, wc);
-			        Set<E> edges = g.getE(src, wc);
-			        
-			        //result.addAll(this.getVerteciesFromSource(vertices, edges, src));
-			        listCounter++;
-			        // Edges add Next level
-			        
-			        current = src;
-			        
-			        //result.add(src);
-		    	}
-    		}else{
-    			ArrayList<Target> queue = new ArrayList<Target>();
-    			queue.addAll(hopMap.get(i));
-    			while (!queue.isEmpty()){
-					Target target = queue.get(0);
-			        queue.remove(0);
-			        URI src = target.getNode();
-			        
-			
-			        Set<URI> vertices = g.getV(src, wc);
-			        Set<E> edges = g.getE(src, wc);
-			        
-			        //result.addAll(this.getVerteciesFromSource(vertices, edges, src));
-			        listCounter++;
-			        // Edges add Next level
-			        
-			        current = src;
-			        
-			        //result.add(src);
-		    	}
-    		}
-    		
-    	}
-        return result;
-		
+		visited = new HashSet<URI>();
+		visited.addAll(sources);
+
 	}
-    
+
+	public BFSLevel(G g, URI source, WalkConstraint wc) {
+		this(g, SetUtils.buildSet(source), wc);
+	}
+
+	public boolean hasNextLevel() {
+		return (queuenextlvl.isEmpty() == false);
+	}
+
+	public HashMap<URI, ArrayList<SemanticPath>> LevelSearch(int hops) {
+		HashMap<URI, ArrayList<SemanticPath>> result = new HashMap<URI, ArrayList<SemanticPath>>();
+		HashMap<Integer, ArrayList<Target>> hopMap = new HashMap<Integer, ArrayList<Target>>();
+		int listCounter = 0;
+		for (int i = 0; i < hops; i++) {
+			if (i == 0) {
+				while (!queuenextlvl.isEmpty()) {
+					URI src = queuenextlvl.get(0);
+					queuenextlvl.remove(0);
+					ArrayList<Target> targetList = this.firstLevelSearch(g.getV(src, wc), g.getE(src, wc), src);
+					hopMap.put(1, targetList);
+
+					current = src;
+
+					// result.add(src);
+				}
+			} else {
+				ArrayList<Target> queue = new ArrayList<Target>();
+				queue.addAll(hopMap.get(i));
+				while (!queue.isEmpty()) {
+					Target target = queue.get(0);
+					queue.remove(0);
+					URI src = target.getNode();
+
+					Set<URI> vertices = g.getV(src, wc);
+					Set<E> edges = g.getE(src, wc);
+
+					// result.addAll(this.getVerteciesFromSource(vertices,
+					// edges, src));
+					listCounter++;
+					// Edges add Next level
+
+					current = src;
+
+					// result.add(src);
+				}
+			}
+
+		}
+		return result;
+
+	}
+
+	private ArrayList<Target> firstLevelSearch(Set<URI> vertices, Set<E> edges, URI src) {
+		ArrayList<Target> result = new ArrayList<Target>();
+		for (URI v : vertices) {
+			if (!visited.contains(v)) {
+				for (E e : edges) {
+					if (e.getSource().equals(src)) {
+						if (e.getTarget().equals(v)) {
+							Target target = new Target(v, e, 0);
+							result.add(target);
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList) {
+		ArrayList<Target> result = new ArrayList<Target>();
+		for (int i = 0; i < targetList.size(); i++) {
+			URI src = targetList.get(i).getNode();
+			Set<URI> vertices = g.getV(src, wc);
+			Set<E> edges = g.getE(src, wc);
+			for (URI v : vertices) {
+				if (!visited.contains(v)) {
+					for (E e : edges) {
+						if (e.getSource().equals(src)) {
+							if (e.getTarget().equals(v)) {
+								Target target = new Target(v, e, 0);
+								result.add(target);
+							}
+						}
+					}
+				}
+			}
+		}
+		return result;
+	}
+
 }

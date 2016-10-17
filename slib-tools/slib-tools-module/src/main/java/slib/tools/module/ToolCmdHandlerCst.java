@@ -34,6 +34,7 @@
 package slib.tools.module;
 
 import java.util.Map;
+
 import org.apache.commons.cli.Option;
 
 /**
@@ -44,43 +45,43 @@ import org.apache.commons.cli.Option;
  */
 public abstract class ToolCmdHandlerCst {
 
-    String appCmdName;
-    boolean debugMode;
-    Map<Option, Integer> optionsOrder;
+	String appCmdName;
+	boolean debugMode;
+	Map<Option, Integer> optionsOrder;
 
-    /**
-     *
-     * @param appCmdName
-     * @param debugMode
-     * @param optionsOrder
-     */
-    public ToolCmdHandlerCst(String appCmdName, boolean debugMode, Map<Option, Integer> optionsOrder) {
-        this.appCmdName = appCmdName;
-        this.debugMode = debugMode;
-        this.optionsOrder = optionsOrder;
-    }
+	/**
+	 *
+	 * @param appCmdName
+	 * @param debugMode
+	 * @param optionsOrder
+	 */
+	public ToolCmdHandlerCst(String appCmdName, boolean debugMode, Map<Option, Integer> optionsOrder) {
+		this.appCmdName = appCmdName;
+		this.debugMode = debugMode;
+		this.optionsOrder = optionsOrder;
+	}
 
-    /**
-     *
-     * @return the name of the command line
-     */
-    public String getAppCmdName() {
-        return appCmdName;
-    }
+	/**
+	 *
+	 * @return the name of the command line
+	 */
+	public String getAppCmdName() {
+		return appCmdName;
+	}
 
-    /**
-     *
-     * @return true if the application is in debug mode
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
+	/**
+	 *
+	 * @return true if the application is in debug mode
+	 */
+	public boolean getDebugMode() {
+		return debugMode;
+	}
 
-    /**
-     *
-     * @return the option order
-     */
-    public Map<Option, Integer> getOptionOrder() {
-        return optionsOrder;
-    }
+	/**
+	 *
+	 * @return the option order
+	 */
+	public Map<Option, Integer> getOptionOrder() {
+		return optionsOrder;
+	}
 }
