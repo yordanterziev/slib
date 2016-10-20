@@ -37,10 +37,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.openrdf.model.URI;
 import org.openrdf.model.vocabulary.RDF;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import slib.graph.io.conf.GDataConf;
 import slib.graph.io.loader.GraphLoader;
 import slib.graph.io.loader.utils.filter.graph.Filter;
@@ -66,280 +68,290 @@ import slib.utils.impl.BigFileReader;
  */
 public class GraphLoader_GAF_2 implements GraphLoader {
 
-    public final static int DB = 0;
-    public final static int DB_OBJECT_ID = 1;
-    public final static int DB_OBJECT_SYMBOL = 2;
-    public final static int QUALIFIER = 3;
-    public final static int GOID = 4;
-    public final static int REFERENCE = 5;
-    public final static int EVIDENCE_CODE = 6;
-    public final static int WITH = 7;
-    public final static int ASPECT = 8;
-    public final static int DB_OBJECT_NAME = 9;
-    public final static int DB_OBJECT_SYNONYM = 10;
-    public final static int DB_OBJECT_TYPE = 11;
-    public final static int TAXON = 12;
-    public final static int DATE = 13;
-    public final static int ASSIGNED_BY = 14;
-    public final static int ANNOTATION_XP = 15;
-    public final static int GENE_PRODUCT_ISOFORM = 16;
-    private G graph;
-    Logger logger = LoggerFactory.getLogger(this.getClass());
-    URIFactoryMemory factory = URIFactoryMemory.getSingleton();
-    String prefixUriInstance;
-    String defaultURIprefix;
-    Pattern colon = Pattern.compile(":");
-
-    /**
-     * Method used to load an annotation repository considering a specific
-     * configuration and a potential mapping restriction i.e. a {@link G}
-     * containing the concepts to consider. A {@link FilterGraph_GAF2} can be
-     * associated to a configuration in order to define restrictions to consider
-     * during the parsing (e.g. taxons, Evidence Code, origin knowledge base)
-     *
-     * @param conf object defining a configuration. If the configuration file
-     * define a {@link Filter} {@link FilterGraph_GAF2}, it will be evaluated
-     * during the parsing.
-     * @param graph a graph defining the concepts to consider, can be set to
-     * null if no mapping restriction have to be take into account If a graph is
-     * specified only annotation corresponding a graph Node will be loaded.
-     * @throws SLIB_Ex_Critic
-     *
-     */
-    @Override
-    public void populate(GDataConf conf, G graph) throws SLIB_Ex_Critic {
-
-        logger.info("-------------------------------------");
-        logger.info("Loading data using GAF2 loader.");
-        logger.info("-------------------------------------");
-
-        if (graph == null) {
-            throw new SLIB_Ex_Critic("Cannot process Null Graph");
-        }
-
-        logger.info("GAF 2 loader populates graph " + graph.getURI());
-        this.graph = graph;
-
-        process(conf);
-        logger.info("-------------------------------------");
-    }
-
-    private void process(GDataConf conf) throws SLIB_Ex_Critic {
-
-        prefixUriInstance = (String) conf.getParameter("prefix");
-        if (prefixUriInstance == null) {
-            prefixUriInstance = graph.getURI().getNamespace();
-        }
-
-        logger.info("Instance URIs will be prefixed by: " + prefixUriInstance);
-
-        defaultURIprefix = prefixUriInstance;
-        logger.info("Default URI prefix is set to: " + prefixUriInstance);
-
-        Set<Filter> filters = new HashSet<Filter>();
-
-        String filtersAsStrings = (String) conf.getParameter("filters");
-
-        if (filtersAsStrings != null) {
-            String[] filterNames = filtersAsStrings.split(",");
-
-            FilterRepository filtersRepo = FilterRepository.getInstance();
-
-            for (String fname : filterNames) {
-                Filter f = filtersRepo.getFilter(fname);
-                if (f == null) {
-                    throw new SLIB_Ex_Critic("Cannot locate filter associated to id " + fname);
-                }
-                filters.add(f);
-            }
-        }
+	public final static int DB = 0;
+	public final static int DB_OBJECT_ID = 1;
+	public final static int DB_OBJECT_SYMBOL = 2;
+	public final static int QUALIFIER = 3;
+	public final static int GOID = 4;
+	public final static int REFERENCE = 5;
+	public final static int EVIDENCE_CODE = 6;
+	public final static int WITH = 7;
+	public final static int ASPECT = 8;
+	public final static int DB_OBJECT_NAME = 9;
+	public final static int DB_OBJECT_SYNONYM = 10;
+	public final static int DB_OBJECT_TYPE = 11;
+	public final static int TAXON = 12;
+	public final static int DATE = 13;
+	public final static int ASSIGNED_BY = 14;
+	public final static int ANNOTATION_XP = 15;
+	public final static int GENE_PRODUCT_ISOFORM = 16;
+	private G graph;
+	Logger logger = LoggerFactory.getLogger(this.getClass());
+	URIFactoryMemory factory = URIFactoryMemory.getSingleton();
+	String prefixUriInstance;
+	String defaultURIprefix;
+	Pattern colon = Pattern.compile(":");
+
+	/**
+	 * Method used to load an annotation repository considering a specific
+	 * configuration and a potential mapping restriction i.e. a {@link G}
+	 * containing the concepts to consider. A {@link FilterGraph_GAF2} can be
+	 * associated to a configuration in order to define restrictions to consider
+	 * during the parsing (e.g. taxons, Evidence Code, origin knowledge base)
+	 *
+	 * @param conf
+	 *            object defining a configuration. If the configuration file
+	 *            define a {@link Filter} {@link FilterGraph_GAF2}, it will be
+	 *            evaluated during the parsing.
+	 * @param graph
+	 *            a graph defining the concepts to consider, can be set to null
+	 *            if no mapping restriction have to be take into account If a
+	 *            graph is specified only annotation corresponding a graph Node
+	 *            will be loaded.
+	 * @throws SLIB_Ex_Critic
+	 *
+	 */
+	@Override
+	public void populate(GDataConf conf, G graph) throws SLIB_Ex_Critic {
+
+		logger.info("-------------------------------------");
+		logger.info("Loading data using GAF2 loader.");
+		logger.info("-------------------------------------");
+
+		if (graph == null) {
+			throw new SLIB_Ex_Critic("Cannot process Null Graph");
+		}
+
+		logger.info("GAF 2 loader populates graph " + graph.getURI());
+		this.graph = graph;
+
+		process(conf);
+		logger.info("-------------------------------------");
+	}
+
+	private void process(GDataConf conf) throws SLIB_Ex_Critic {
+
+		prefixUriInstance = (String) conf.getParameter("prefix");
+		if (prefixUriInstance == null) {
+			prefixUriInstance = graph.getURI().getNamespace();
+		}
+
+		logger.info("Instance URIs will be prefixed by: " + prefixUriInstance);
+
+		defaultURIprefix = prefixUriInstance;
+		logger.info("Default URI prefix is set to: " + prefixUriInstance);
+
+		Set<Filter> filters = new HashSet<Filter>();
+
+		String filtersAsStrings = (String) conf.getParameter("filters");
+
+		if (filtersAsStrings != null) {
+			String[] filterNames = filtersAsStrings.split(",");
+
+			FilterRepository filtersRepo = FilterRepository.getInstance();
+
+			for (String fname : filterNames) {
+				Filter f = filtersRepo.getFilter(fname);
+				if (f == null) {
+					throw new SLIB_Ex_Critic("Cannot locate filter associated to id " + fname);
+				}
+				filters.add(f);
+			}
+		}
+
+		FilterGraph_GAF2 filter = null;
+		Set<String> taxons = null;
+		Set<String> excludedEC = null;
+
+		if (!filters.isEmpty()) {
+
+			for (Filter f : filters) {
+
+				if (f instanceof FilterGraph_GAF2) {
+
+					if (filter != null) {
+						throw new SLIB_Ex_Critic(
+								"Two filters " + FilterGraph_GAF2_cst.TYPE + " have been specified. Only one admitted");
+					} else {
 
-        FilterGraph_GAF2 filter = null;
-        Set<String> taxons = null;
-        Set<String> excludedEC = null;
+						filter = (FilterGraph_GAF2) f;
+						logger.info("Filtering according to filter " + filter.getId() + "\ttype" + filter.getType());
 
-        if (!filters.isEmpty()) {
+						taxons = filter.getTaxons();
+						excludedEC = filter.getExcludedEC();
+					}
+				}
+			}
+		}
 
-            for (Filter f : filters) {
+		Pattern p_tab = Pattern.compile("\t");
+		Pattern p_taxid = null;
 
-                if (f instanceof FilterGraph_GAF2) {
-
-                    if (filter != null) {
-                        throw new SLIB_Ex_Critic("Two filters " + FilterGraph_GAF2_cst.TYPE + " have been specified. Only one admitted");
-                    } else {
+		String fileLocation = conf.getLoc();
 
-                        filter = (FilterGraph_GAF2) f;
-                        logger.info("Filtering according to filter " + filter.getId() + "\ttype" + filter.getType());
+		if (taxons != null) {
+			p_taxid = Pattern.compile(".?taxon:(\\d+).?");
+		}
 
-                        taxons = filter.getTaxons();
-                        excludedEC = filter.getExcludedEC();
-                    }
-                }
-            }
-        }
+		int countEntities = 0;
+		int countAnnotsLoaded = 0;
 
-        Pattern p_tab = Pattern.compile("\t");
-        Pattern p_taxid = null;
+		logger.info("file location : " + fileLocation);
 
-        String fileLocation = conf.getLoc();
+		int existsQualifier = 0; // a qualifier exists for the annotation
+		int not_found = 0; // the annotation is not found on the loaded graph
+		int eC_restriction = 0; // excluded due to evidence code restriction
+		int taxonsRestriction = 0;
+
+		logger.info("Loading...");
 
-        if (taxons != null) {
-            p_taxid = Pattern.compile(".?taxon:(\\d+).?");
-        }
+		URIFactory uriManager = URIFactoryMemory.getSingleton();
+
+		boolean validHeader = false;
+		String line, qualifier, gotermURIstring, evidenceCode, taxon_ids;
+		int c = 0;
+
+		try {
 
-        int countEntities = 0;
-        int countAnnotsLoaded = 0;
+			BigFileReader file = new BigFileReader(fileLocation);
+			String[] data;
+			URI uriGOterm, entityID;
+
+			while (file.hasNext()) {
+
+				line = file.nextTrimmed();
+
+				if (line.startsWith("!")) {
+
+					data = line.split(":");
 
-        logger.info("file location : " + fileLocation);
+					if (data.length == 2) {
+						String flag = data[0].trim().substring(1);
+						String version = data[1].trim();
 
-        int existsQualifier = 0; // a qualifier exists for the annotation
-        int not_found = 0; // the annotation is not found on the loaded graph
-        int eC_restriction = 0; // excluded due to evidence code restriction
-        int taxonsRestriction = 0;
+						if (flag.equals("gaf-version") && (version.equals("2") || version.equals("2.0"))) {
+							validHeader = true;
+						}
+					}
+				} else if (validHeader) {
 
-        logger.info("Loading...");
+					data = p_tab.split(line);
 
-        URIFactory uriManager = URIFactoryMemory.getSingleton();
+					entityID = uriManager.getURI(prefixUriInstance + data[DB_OBJECT_ID]);
+					gotermURIstring = buildURI(data[GOID]);
+					qualifier = data[QUALIFIER];
+					evidenceCode = data[EVIDENCE_CODE];
+					taxon_ids = data[TAXON];
 
-        boolean validHeader = false;
-        String line, qualifier, gotermURIstring, evidenceCode, taxon_ids;
-        int c = 0;
+					// check if Evidence Code is valid
+					if (excludedEC == null || EvidenceCodeRules.areValid(excludedEC, evidenceCode)) {
+
+						// We do not consider go term associated with a
+						// qualifier
+						// e.g. NOT, contributes_to ...
+						// TODO take into consideration this information !
+						if (qualifier.isEmpty()) {
 
-        try {
-
-            BigFileReader file = new BigFileReader(fileLocation);
-            String[] data;
-            URI uriGOterm, entityID;
-
-            while (file.hasNext()) {
-
-                line = file.nextTrimmed();
-
-                if (line.startsWith("!")) {
-
-                    data = line.split(":");
-
-                    if (data.length == 2) {
-                        String flag = data[0].trim().substring(1);
-                        String version = data[1].trim();
-
-                        if (flag.equals("gaf-version") && (version.equals("2") || version.equals("2.0"))) {
-                            validHeader = true;
-                        }
-                    }
-                } else if (validHeader) {
-
-                    data = p_tab.split(line);
-
-                    entityID = uriManager.getURI(prefixUriInstance + data[DB_OBJECT_ID]);
-                    gotermURIstring = buildURI(data[GOID]);
-                    qualifier = data[QUALIFIER];
-                    evidenceCode = data[EVIDENCE_CODE];
-                    taxon_ids = data[TAXON];
-
-                    // check if Evidence Code is valid
-                    if (excludedEC == null || EvidenceCodeRules.areValid(excludedEC, evidenceCode)) {
-
-                        // We do not consider go term associated with a qualifier 
-                        // e.g. NOT, contributes_to ...
-                        // TODO take into consideration this information !
-                        if (qualifier.isEmpty()) {
-
-                            uriGOterm = uriManager.getURI(gotermURIstring);
-
-                            if (graph.containsVertex(uriGOterm)) { // if the annotation is in the graph
-
-                                boolean valid = true;
-
-                                if (p_taxid != null) {
-
-                                    Matcher m = p_taxid.matcher(taxon_ids);
-                                    valid = false;
-
-                                    while (m.find() && !valid) {
-
-                                        if (taxons != null && taxons.contains(m.group(1))) {
-                                            valid = true;
-                                        }
-                                    }
-                                }
-                                if (valid) {
-
-                                    if (!graph.containsVertex(entityID)) {
-                                        graph.addV(entityID);
-                                        countEntities++;
-                                    }
-                                    graph.addE(entityID, RDF.TYPE, uriGOterm);
-                                    countAnnotsLoaded++;
-                                } else {
-                                    taxonsRestriction++;
-                                }
-                            } else {
-                                not_found++;
-                                logger.debug("Cannot found GO term " + uriGOterm);
-                            }
-                        } else {
-                            existsQualifier++;
-                        }
-                    } else {
-                        eC_restriction++;
-                    }
-                }
-                c++;
-
-                if (c % 1000000 == 0) {
-                    logger.info(c + " GAF entries processed");
-                }
-            }
-            file.close();
-
-        } catch (Exception e) {
-            throw new SLIB_Ex_Critic(e);
-        }
-
-        if (!validHeader) {
-            throw new SLIB_Ex_Critic("Invalid header for GAF-2 file " + fileLocation + "\nExpecting \"!gaf-version: 2.0\" as first line");
-        }
-
-        logger.info("\tExcluded  - Taxons restriction         : " + taxonsRestriction);
-        logger.info("\tExcluded  - Evidence Code restriction  : " + eC_restriction);
-        logger.info("\tExcluded  - Contains qualifier 	      : " + existsQualifier);
-        logger.info("\tNot found unexisting term in the graph :	" + not_found);
-
-        logger.info("Number of Instance loaded 	  	: " + countEntities);
-        logger.info("Number of Annotation loaded 	: " + countAnnotsLoaded);
-        logger.info("GAF2 Loader done.");
-    }
-
-    private String buildURI(String value) throws SLIB_Ex_Critic {
-
-        String info[] = getDataColonSplit(value);
-
-        if (info != null && info.length == 2) {
-
-            String ns = factory.getNamespace(info[0]);
-            if (ns == null) {
-                throw new SLIB_Ex_Critic("No namespace associated to prefix " + info[0] + ". Cannot load " + value + ", please load required namespace prefix");
-            }
-
-            return ns + info[1];
-        } else {
-            return defaultURIprefix + value;
-        }
-    }
-
-    private String[] getDataColonSplit(String line) {
-
-        if (line.isEmpty()) {
-            return null;
-        }
-
-        String data[] = colon.split(line);
-        data[0] = data[0].trim();
-
-        if (data.length > 1) {
-            data[1] = data[1].trim();
-        }
-        return data;
-    }
+							uriGOterm = uriManager.getURI(gotermURIstring);
+
+							if (graph.containsVertex(uriGOterm)) { // if the
+																	// annotation
+																	// is in the
+																	// graph
+
+								boolean valid = true;
+
+								if (p_taxid != null) {
+
+									Matcher m = p_taxid.matcher(taxon_ids);
+									valid = false;
+
+									while (m.find() && !valid) {
+
+										if (taxons != null && taxons.contains(m.group(1))) {
+											valid = true;
+										}
+									}
+								}
+								if (valid) {
+
+									if (!graph.containsVertex(entityID)) {
+										graph.addV(entityID);
+										countEntities++;
+									}
+									graph.addE(entityID, RDF.TYPE, uriGOterm);
+									countAnnotsLoaded++;
+								} else {
+									taxonsRestriction++;
+								}
+							} else {
+								not_found++;
+								logger.debug("Cannot found GO term " + uriGOterm);
+							}
+						} else {
+							existsQualifier++;
+						}
+					} else {
+						eC_restriction++;
+					}
+				}
+				c++;
+
+				if (c % 1000000 == 0) {
+					logger.info(c + " GAF entries processed");
+				}
+			}
+			file.close();
+
+		} catch (Exception e) {
+			throw new SLIB_Ex_Critic(e);
+		}
+
+		if (!validHeader) {
+			throw new SLIB_Ex_Critic("Invalid header for GAF-2 file " + fileLocation
+					+ "\nExpecting \"!gaf-version: 2.0\" as first line");
+		}
+
+		logger.info("\tExcluded  - Taxons restriction         : " + taxonsRestriction);
+		logger.info("\tExcluded  - Evidence Code restriction  : " + eC_restriction);
+		logger.info("\tExcluded  - Contains qualifier 	      : " + existsQualifier);
+		logger.info("\tNot found unexisting term in the graph :	" + not_found);
+
+		logger.info("Number of Instance loaded 	  	: " + countEntities);
+		logger.info("Number of Annotation loaded 	: " + countAnnotsLoaded);
+		logger.info("GAF2 Loader done.");
+	}
+
+	private String buildURI(String value) throws SLIB_Ex_Critic {
+
+		String info[] = getDataColonSplit(value);
+
+		if (info != null && info.length == 2) {
+
+			String ns = factory.getNamespace(info[0]);
+			if (ns == null) {
+				throw new SLIB_Ex_Critic("No namespace associated to prefix " + info[0] + ". Cannot load " + value
+						+ ", please load required namespace prefix");
+			}
+
+			return ns + info[1];
+		} else {
+			return defaultURIprefix + value;
+		}
+	}
+
+	private String[] getDataColonSplit(String line) {
+
+		if (line.isEmpty()) {
+			return null;
+		}
+
+		String data[] = colon.split(line);
+		data[0] = data[0].trim();
+
+		if (data.length > 1) {
+			data[1] = data[1].trim();
+		}
+		return data;
+	}
 }

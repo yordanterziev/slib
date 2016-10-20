@@ -44,8 +44,7 @@ public class BFSLevel {
 
 	public HashMap<URI, ArrayList<SemanticPath>> LevelSearch(int hops) {
 		HashMap<URI, ArrayList<SemanticPath>> result = new HashMap<URI, ArrayList<SemanticPath>>();
-		HashMap<Integer, ArrayList<Target>> hopMap = new HashMap<Integer, ArrayList<Target>>();
-		int listCounter = 0;
+		HashMap<Integer, ArrayList<Target>> hopMap = new HashMap<Integer, ArrayList<Target>>();		
 		for (int i = 0; i < hops; i++) {
 			if (i == 0) {
 				while (!queuenextlvl.isEmpty()) {
@@ -53,31 +52,26 @@ public class BFSLevel {
 					queuenextlvl.remove(0);
 					ArrayList<Target> targetList = this.firstLevelSearch(g.getV(src, wc), g.getE(src, wc), src);
 					hopMap.put(1, targetList);
-
-					current = src;
-
-					// result.add(src);
+					for(int j = 0;j<targetList.size();j++){
+						URI uri = targetList.get(j).getNode();
+						SemanticPath path = targetList.get(j).getPath();
+						
+						if(result.containsKey(uri)){
+							ArrayList<SemanticPath> temp = result.get(uri);
+							temp.add(path);
+						}else{
+							ArrayList<SemanticPath> temp = new ArrayList<SemanticPath>();
+							temp.add(path);
+							result.put(uri, temp);
+						}
+						
+					}
 				}
 			} else {
 				ArrayList<Target> queue = new ArrayList<Target>();
+				ArrayList<Target> targetList = new ArrayList<Target>();
 				queue.addAll(hopMap.get(i));
-				while (!queue.isEmpty()) {
-					Target target = queue.get(0);
-					queue.remove(0);
-					URI src = target.getNode();
-
-					Set<URI> vertices = g.getV(src, wc);
-					Set<E> edges = g.getE(src, wc);
-
-					// result.addAll(this.getVerteciesFromSource(vertices,
-					// edges, src));
-					listCounter++;
-					// Edges add Next level
-
-					current = src;
-
-					// result.add(src);
-				}
+				targetList.addAll(this.nextLevelSearch(queue));
 			}
 
 		}

@@ -74,53 +74,55 @@ import java.util.Set;
  */
 public class EvidenceCodeRules {
 
-    /**
-     *
-     */
-    public final static Set<String> EXPchildren = new HashSet<String>();
+	/**
+	 *
+	 */
+	public final static Set<String> EXPchildren = new HashSet<String>();
 
-    static {
-        EXPchildren.add("IDA");
-        EXPchildren.add("IPI");
-        EXPchildren.add("IMP");
-        EXPchildren.add("IGI");
-        EXPchildren.add("IEP");
-    }
+	static {
+		EXPchildren.add("IDA");
+		EXPchildren.add("IPI");
+		EXPchildren.add("IMP");
+		EXPchildren.add("IGI");
+		EXPchildren.add("IEP");
+	}
 
-    /**
-     *
-     */
-    public final static Set<String> ISSchildren = new HashSet<String>();
+	/**
+	 *
+	 */
+	public final static Set<String> ISSchildren = new HashSet<String>();
 
-    static {
-        ISSchildren.add("ISO");
-        ISSchildren.add("ISA");
-        ISSchildren.add("ISM");
-    }
+	static {
+		ISSchildren.add("ISO");
+		ISSchildren.add("ISA");
+		ISSchildren.add("ISM");
+	}
 
-    /**
-     * Evaluate if a particular EC respect restrictions contains in a Collection
-     * of String defining invalid EC EC hierarchy is considered during the
-     * evaluation
-     *
-     * @param ecCodesRestriction a Collection of String defining EC restrictions
-     * @param ec the EC evaluated
-     * @return boolean true if the evaluated EC is valid considered given
-     * restrictions
-     */
-    public static boolean areValid(Collection<String> ecCodesRestriction, String ec) {
+	/**
+	 * Evaluate if a particular EC respect restrictions contains in a Collection
+	 * of String defining invalid EC EC hierarchy is considered during the
+	 * evaluation
+	 *
+	 * @param ecCodesRestriction
+	 *            a Collection of String defining EC restrictions
+	 * @param ec
+	 *            the EC evaluated
+	 * @return boolean true if the evaluated EC is valid considered given
+	 *         restrictions
+	 */
+	public static boolean areValid(Collection<String> ecCodesRestriction, String ec) {
 
-        for (String ecR : ecCodesRestriction) {
+		for (String ecR : ecCodesRestriction) {
 
-            if (ecR.equals(ec)) {
-                return false;
-            } else if (ecR.equals("EXP") && EXPchildren.contains(ec)) {
-                return false;
-            } else if (ecR.equals("ISS") && ISSchildren.contains(ec)) {
-                return false;
-            }
-        }
-        return true;
-    }
+			if (ecR.equals(ec)) {
+				return false;
+			} else if (ecR.equals("EXP") && EXPchildren.contains(ec)) {
+				return false;
+			} else if (ecR.equals("ISS") && ISSchildren.contains(ec)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
