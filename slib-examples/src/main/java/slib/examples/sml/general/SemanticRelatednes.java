@@ -29,14 +29,6 @@ public interface SemanticRelatednes {
 	 */
 	public void setOrigin(URI uri);
 	
-	/**
-	 * 
-	 * 
-	 * @return true if any node has an successor node
-	 */
-	public boolean hasNext();
-	
-
 	
 	//We need a suitable data structure
 	public HashMap<URI, ArrayList<E>> getSemanticallyCorrectPaths(int hops);

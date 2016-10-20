@@ -3,7 +3,6 @@ package slib.graph.algo.traversal.classical;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.openrdf.model.URI;
@@ -13,69 +12,42 @@ import slib.graph.algo.utils.Target;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.WalkConstraint;
-import slib.utils.impl.SetUtils;
 
 public class BFSLevel {
 	G g;
 	private WalkConstraint wc;
-	URI current;
-	List<URI> queuenextlvl;
+	URI source;
 	Set<URI> visited;
-
-	public BFSLevel(G g, Set<URI> sources, WalkConstraint wc) {
-
-		this.g = g;
-		this.wc = wc;
-
-		this.queuenextlvl = new ArrayList<URI>(sources);
-
-		visited = new HashSet<URI>();
-		visited.addAll(sources);
-
-	}
+	HashMap<Integer, ArrayList<Target>> hopMap;
+	HashMap<URI, ArrayList<SemanticPath>> pathMap;
 
 	public BFSLevel(G g, URI source, WalkConstraint wc) {
-		this(g, SetUtils.buildSet(source), wc);
-	}
-
-	public boolean hasNextLevel() {
-		return (queuenextlvl.isEmpty() == false);
+		this.g = g;
+		this.wc = wc;
+		this.source = source;
+		visited = new HashSet<URI>();
+		visited.add(source);
 	}
 
 	public HashMap<URI, ArrayList<SemanticPath>> LevelSearch(int hops) {
-		HashMap<URI, ArrayList<SemanticPath>> result = new HashMap<URI, ArrayList<SemanticPath>>();
-		HashMap<Integer, ArrayList<Target>> hopMap = new HashMap<Integer, ArrayList<Target>>();		
-		for (int i = 0; i < hops; i++) {
-			if (i == 0) {
-				while (!queuenextlvl.isEmpty()) {
-					URI src = queuenextlvl.get(0);
-					queuenextlvl.remove(0);
-					ArrayList<Target> targetList = this.firstLevelSearch(g.getV(src, wc), g.getE(src, wc), src);
-					hopMap.put(1, targetList);
-					for(int j = 0;j<targetList.size();j++){
-						URI uri = targetList.get(j).getNode();
-						SemanticPath path = targetList.get(j).getPath();
-						
-						if(result.containsKey(uri)){
-							ArrayList<SemanticPath> temp = result.get(uri);
-							temp.add(path);
-						}else{
-							ArrayList<SemanticPath> temp = new ArrayList<SemanticPath>();
-							temp.add(path);
-							result.put(uri, temp);
-						}
-						
-					}
-				}
+		pathMap = new HashMap<URI, ArrayList<SemanticPath>>();
+		hopMap = new HashMap<Integer, ArrayList<Target>>();
+		for (int i = 1; i <= hops; i++) {
+			if (i == 1) {
+				ArrayList<Target> targetList = this.firstLevelSearch(g.getV(source, wc), g.getE(source, wc), source);
+				hopMap.put(1, targetList);
+				this.targetPutInMap(targetList);
+
 			} else {
 				ArrayList<Target> queue = new ArrayList<Target>();
 				ArrayList<Target> targetList = new ArrayList<Target>();
 				queue.addAll(hopMap.get(i));
-				targetList.addAll(this.nextLevelSearch(queue));
+				targetList.addAll(this.nextLevelSearch(queue, i));
+				this.targetPutInMap(targetList);
 			}
 
 		}
-		return result;
+		return pathMap;
 
 	}
 
@@ -96,9 +68,10 @@ public class BFSLevel {
 		return result;
 	}
 
-	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList) {
+	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList, int hop) {
 		ArrayList<Target> result = new ArrayList<Target>();
 		for (int i = 0; i < targetList.size(); i++) {
+			Target target = targetList.get(0);
 			URI src = targetList.get(i).getNode();
 			Set<URI> vertices = g.getV(src, wc);
 			Set<E> edges = g.getE(src, wc);
@@ -107,8 +80,8 @@ public class BFSLevel {
 					for (E e : edges) {
 						if (e.getSource().equals(src)) {
 							if (e.getTarget().equals(v)) {
-								Target target = new Target(v, e, 0);
-								result.add(target);
+								Target newtarget = new Target(v, target.getPath(), hop);
+								result.add(newtarget);
 							}
 						}
 					}
@@ -116,6 +89,21 @@ public class BFSLevel {
 			}
 		}
 		return result;
+	}
+
+	private void targetPutInMap(ArrayList<Target> targetList) {
+		for (int j = 0; j < targetList.size(); j++) {
+			URI uri = targetList.get(j).getNode();
+			SemanticPath path = targetList.get(j).getPath();
+			if (pathMap.containsKey(uri)) {
+				ArrayList<SemanticPath> temp = pathMap.get(uri);
+				temp.add(path);
+			} else {
+				ArrayList<SemanticPath> temp = new ArrayList<SemanticPath>();
+				temp.add(path);
+				pathMap.put(uri, temp);
+			}
+		}
 	}
 
 }

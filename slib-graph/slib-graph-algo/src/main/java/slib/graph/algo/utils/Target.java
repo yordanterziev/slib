@@ -27,10 +27,10 @@ public class Target {
 		this.hops = hops;
 	}
 	
-	public Target(URI node, List<E> List, int hops) {
+	public Target(URI node, SemanticPath path, int hops) {
 		super();
 		this.node = node;
-		path = new SemanticPath(List);
+		this.path = path;
 
 		this.hops = hops;
 	}

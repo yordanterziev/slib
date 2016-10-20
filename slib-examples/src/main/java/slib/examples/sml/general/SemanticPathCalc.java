@@ -114,12 +114,6 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public boolean hasNext() {
-		// TODO Auto-generated method stub
-		return bfs.hasNextLevel();
-	}
-
-	@Override
 	public void setOrigin(URI uri) {
 		// TODO Auto-generated method stub
 		this.origin = uri;
