@@ -19,6 +19,7 @@ import slib.examples.sml.general.xml.edges.Edges;
 import slib.graph.algo.traversal.classical.BFS;
 import slib.graph.algo.traversal.classical.BFSLevel;
 import slib.graph.algo.utils.SemanticPath;
+import slib.graph.algo.utils.SemanticPathAdder;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.Direction;
@@ -49,10 +50,10 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	private URIFactory uriFactory;
 	private URI origin;
 	private JAXBContext edgeCategory;
-	private static List<String> hEdges;
-	private static List<String> dEdges;
-	private static List<String> uEdges;
-	private static ArrayList<String> correctPaths = new ArrayList<String>();
+	private static ArrayList<String> hEdges;
+	private static ArrayList<String> dEdges;
+	private static ArrayList<String> uEdges;
+	private SemanticPathAdder spa;
 	private String ontology;
 	private BFSLevel bfs;
 
@@ -78,35 +79,6 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		engine = oc.getEngine();
 		uriFactory = oc.getFactory();
 
-		correctPaths.add("U");
-		correctPaths.add("UU");
-		correctPaths.add("UUU");
-
-		correctPaths.add("UD");
-		correctPaths.add("UUD");
-		correctPaths.add("UDD");
-
-		correctPaths.add("UH");
-		correctPaths.add("UUH");
-		correctPaths.add("UHH");
-
-		correctPaths.add("UHD");
-
-		correctPaths.add("D");
-		correctPaths.add("DD");
-		correctPaths.add("DDD");
-
-		correctPaths.add("DH");
-		correctPaths.add("DDH");
-		correctPaths.add("DHH");
-
-		correctPaths.add("HD");
-		correctPaths.add("HHD");
-		correctPaths.add("HDD");
-
-		correctPaths.add("H");
-		correctPaths.add("HH");
-		correctPaths.add("HHH");
 	}
 
 	public G getGraph() {
@@ -151,9 +123,10 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		edgeCategory = JAXBContext.newInstance("slib.examples.sml.general.xml.edges");
 		Unmarshaller u = edgeCategory.createUnmarshaller();
 		Edges edges = (Edges) ((JAXBElement) u.unmarshal(new FileInputStream(file))).getValue();
-		hEdges = edges.getHorizontalEdges().getName();
-		dEdges = edges.getDownwardEdges().getName();
-		uEdges = edges.getUpwardEdges().getName();
+		hEdges = (ArrayList<String>) edges.getHorizontalEdges().getName();
+		dEdges = (ArrayList<String>) edges.getDownwardEdges().getName();
+		uEdges = (ArrayList<String>) edges.getUpwardEdges().getName();
+		spa = new SemanticPathAdder(uEdges,dEdges,hEdges);
 	}
 
 	/**
@@ -176,7 +149,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 		}
 		WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
 		wc.addWalkconstraints(new WalkConstraintGeneric(map));
-		bfs = new BFSLevel(graph, origin, wc);
+		bfs = new BFSLevel(graph, origin, wc,spa);
 	}
 
 	@Override
@@ -187,61 +160,16 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public HashMap<URI, ArrayList<E>> getSemanticallyCorrectPaths(int hops) {
+	public HashMap<URI, ArrayList<SemanticPath>> getSemanticallyCorrectPaths(int hops) {
 		// TODO Auto-generated method stub
 		HashMap<URI, ArrayList<SemanticPath>> temp = bfs.LevelSearch(hops);
 
-		temp = removeIncorrectPaths(temp);
 
-		return new HashMap<URI, ArrayList<E>>();
+		return temp;
 	}
 
-	private static HashMap<URI, ArrayList<SemanticPath>> removeIncorrectPaths(
-			HashMap<URI, ArrayList<SemanticPath>> temp) {
-		HashMap<URI, ArrayList<SemanticPath>> resultMap = new HashMap<URI, ArrayList<SemanticPath>>(); // result
-		// iterating over Entries
-		for (Entry<URI, ArrayList<SemanticPath>> entry : temp.entrySet()) {
-			ArrayList<SemanticPath> newCorrectPaths = new ArrayList<SemanticPath>();
-			// Iterating over All Paths for each Entry
-			for (int i = 0; i < entry.getValue().size(); i++) {
-				SemanticPath pathClass = entry.getValue().get(i);
-				ArrayList<E> path = pathClass.getPath();
-				String semanticPath = "";
-				// Adding Semantic Path
-				for (int j = 0; i < path.size(); j++) {
-					E edge = path.get(j);
-					if (uEdges.contains(edge.getURI().getLocalName())) {
-						semanticPath = semanticPath + "U";
-					} else if (dEdges.contains(edge.getURI().getLocalName())) {
-						semanticPath = semanticPath + "D";
-					} else {
-						semanticPath = semanticPath + "H";
-					}
-				}
-				// Adding a correct Path to List
-				if (isSemanticCorrect(semanticPath)) {
-					pathClass.setSemanticPath(semanticPath);
-					newCorrectPaths.add(pathClass);
-				}
-			}
-			// Adding all correctPaths to result Map
-			resultMap.put(entry.getKey(), newCorrectPaths);
-		}
-		return resultMap;
-	}
 
-	private static boolean isSemanticCorrect(String path) {
-		boolean result = false;
-		if (path.length() > 3) {
-			path = path.substring(path.length() - 3);
-		}
-		for (int i = 0; i <= correctPaths.size(); i++) {
-			result = correctPaths.get(i).equals(path);
-			if (result = true) {
-				break;
-			}
-		}
-		return result;
-	}
+
+
 
 }

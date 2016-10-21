@@ -7,7 +7,9 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
+import slib.graph.algo.utils.CorrectPaths;
 import slib.graph.algo.utils.SemanticPath;
+import slib.graph.algo.utils.SemanticPathAdder;
 import slib.graph.algo.utils.Target;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
@@ -20,27 +22,31 @@ public class BFSLevel {
 	Set<URI> visited;
 	HashMap<Integer, ArrayList<Target>> hopMap;
 	HashMap<URI, ArrayList<SemanticPath>> pathMap;
+	CorrectPaths correctPaths;
+	SemanticPathAdder spa;
 
-	public BFSLevel(G g, URI source, WalkConstraint wc) {
+	public BFSLevel(G g, URI source, WalkConstraint wc, SemanticPathAdder spa) {
 		this.g = g;
 		this.wc = wc;
 		this.source = source;
 		visited = new HashSet<URI>();
 		visited.add(source);
+		correctPaths  = new CorrectPaths();
+		this.spa = spa;
 	}
 
 	public HashMap<URI, ArrayList<SemanticPath>> LevelSearch(int hops) {
 		pathMap = new HashMap<URI, ArrayList<SemanticPath>>();
 		hopMap = new HashMap<Integer, ArrayList<Target>>();
+		ArrayList<Target> targetList = new ArrayList<Target>();
 		for (int i = 1; i <= hops; i++) {
 			if (i == 1) {
-				ArrayList<Target> targetList = this.firstLevelSearch(g.getV(source, wc), g.getE(source, wc), source);
+				targetList.addAll(this.firstLevelSearch(g.getV(source, wc), g.getE(source, wc), source));
 				hopMap.put(1, targetList);
 				this.targetPutInMap(targetList);
 
 			} else {
 				ArrayList<Target> queue = new ArrayList<Target>();
-				ArrayList<Target> targetList = new ArrayList<Target>();
 				queue.addAll(hopMap.get(i));
 				targetList.addAll(this.nextLevelSearch(queue, i));
 				this.targetPutInMap(targetList);
@@ -58,7 +64,9 @@ public class BFSLevel {
 				for (E e : edges) {
 					if (e.getSource().equals(src)) {
 						if (e.getTarget().equals(v)) {
-							Target target = new Target(v, e, 0);
+							Target target = new Target(v, e, 1);
+							SemanticPath seamnticPathTemp = target.getPath();
+							seamnticPathTemp.setSemanticPath(spa.getSemanticPath(seamnticPathTemp));
 							result.add(target);
 						}
 					}
@@ -81,7 +89,12 @@ public class BFSLevel {
 						if (e.getSource().equals(src)) {
 							if (e.getTarget().equals(v)) {
 								Target newtarget = new Target(v, target.getPath(), hop);
-								result.add(newtarget);
+								newtarget.getPath().addEdge(e);
+								SemanticPath semanticPathTemp = newtarget.getPath();
+								semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
+								if(this.isPathCorrect(newtarget.getPath().getSemanticPath())){
+									result.add(newtarget);
+								}
 							}
 						}
 					}
@@ -104,6 +117,14 @@ public class BFSLevel {
 				pathMap.put(uri, temp);
 			}
 		}
+	}
+	
+	private boolean isPathCorrect(String path){
+		boolean result = false;
+		if(correctPaths.isSemanticCorrect(path)){
+			result = true;
+		}
+		return result;
 	}
 
 }
