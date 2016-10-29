@@ -126,5 +126,25 @@ public class BFSLevel {
 		}
 		return result;
 	}
+	
+	private void selectHighestInformationPath(){
+		double max = 0.0;
+		int position =0;
+		HashMap<URI,SemanticPath> result = new HashMap<URI,SemanticPath>();
+		
+		for(HashMap.Entry<URI,ArrayList<SemanticPath>> entry: pathMap.entrySet()){
+			ArrayList<SemanticPath> value = entry.getValue();
+			URI key = entry.getKey();
+			max = value.get(0).getInformationGain();
+			for(int i = 1; i<value.size();i++){
+				if(max<value.get(i).getInformationGain()){
+					max = value.get(i).getInformationGain();
+					position = i;
+				}
+			}
+			result.put(key, value.get(position));
+		}
+	}
 
+	
 }
