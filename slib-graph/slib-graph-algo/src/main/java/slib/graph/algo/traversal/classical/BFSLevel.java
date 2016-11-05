@@ -35,7 +35,7 @@ public class BFSLevel {
 		this.spa = spa;
 	}
 
-	public HashMap<URI, ArrayList<SemanticPath>> LevelSearch(int hops) {
+	public HashMap<URI,SemanticPath> LevelSearch(int hops) {
 		pathMap = new HashMap<URI, ArrayList<SemanticPath>>();
 		hopMap = new HashMap<Integer, ArrayList<Target>>();
 		ArrayList<Target> targetList = new ArrayList<Target>();
@@ -47,13 +47,15 @@ public class BFSLevel {
 
 			} else {
 				ArrayList<Target> queue = new ArrayList<Target>();
-				queue.addAll(hopMap.get(i));
+				queue.addAll(hopMap.get(i-1));
 				targetList.addAll(this.nextLevelSearch(queue, i));
+				hopMap.put(i, targetList);
 				this.targetPutInMap(targetList);
 			}
 
 		}
-		return pathMap;
+		HashMap<URI,SemanticPath> result = this.selectHighestInformationPath();
+		return result;
 
 	}
 
@@ -127,7 +129,7 @@ public class BFSLevel {
 		return result;
 	}
 	
-	private void selectHighestInformationPath(){
+	private HashMap<URI,SemanticPath> selectHighestInformationPath(){
 		double max = 0.0;
 		int position =0;
 		HashMap<URI,SemanticPath> result = new HashMap<URI,SemanticPath>();
@@ -144,6 +146,7 @@ public class BFSLevel {
 			}
 			result.put(key, value.get(position));
 		}
+		return result;
 	}
 
 	

@@ -32,7 +32,7 @@ public interface SemanticRelatednes {
 	
 	
 	//We need a suitable data structure
-	public HashMap<URI, ArrayList<SemanticPath>> getSemanticallyCorrectPaths(int hops);
+	public HashMap<URI, SemanticPath> getSemanticallyCorrectPaths(int hops);
 
 	
 	/**

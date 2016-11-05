@@ -160,9 +160,9 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public HashMap<URI, ArrayList<SemanticPath>> getSemanticallyCorrectPaths(int hops) {
+	public HashMap<URI,SemanticPath> getSemanticallyCorrectPaths(int hops) {
 		// TODO Auto-generated method stub
-		HashMap<URI, ArrayList<SemanticPath>> temp = bfs.LevelSearch(hops);
+		HashMap<URI,SemanticPath> temp = bfs.LevelSearch(hops);
 
 
 		return temp;

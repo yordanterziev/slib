@@ -24,7 +24,7 @@ public class SRComputation {
 		URIFactory factory = URIFactoryMemory.getSingleton();
 		SemanticRelatednes test = new SemanticPathCalc(swrcOntology, path);
 		test.setOrigin(factory.getURI(swrcOntology + origin));
-		int hops = 1;
+		int hops = 3;
 
 		test.initialiseWalk("Edge.xml");
 		test.getSemanticallyCorrectPaths(hops);
