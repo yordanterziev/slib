@@ -2,9 +2,9 @@ package slib.graph.algo.utils;
 
 import java.util.ArrayList;
 
-public class SemanticPathValidator {
+public class SemanticPathSplitter {
 	
-	public SemanticPathValidator(){
+	public SemanticPathSplitter(){
 	}
 	
 	public ArrayList<String> dividePath(SemanticPath path){

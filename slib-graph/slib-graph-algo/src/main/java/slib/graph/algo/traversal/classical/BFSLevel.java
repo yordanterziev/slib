@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
+//import slib.examples.sml.general.InformationCalculator;
 import slib.graph.algo.utils.CorrectPaths;
 import slib.graph.algo.utils.SemanticPath;
 import slib.graph.algo.utils.SemanticPathAdder;
@@ -14,6 +15,7 @@ import slib.graph.algo.utils.Target;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.WalkConstraint;
+import slib.utils.ex.SLIB_Exception;
 
 public class BFSLevel {
 	G g;
@@ -24,6 +26,7 @@ public class BFSLevel {
 	HashMap<URI, ArrayList<SemanticPath>> pathMap;
 	CorrectPaths correctPaths;
 	SemanticPathAdder spa;
+//	InformationCalculator iCalc;
 
 	public BFSLevel(G g, URI source, WalkConstraint wc, SemanticPathAdder spa) {
 		this.g = g;
@@ -35,7 +38,7 @@ public class BFSLevel {
 		this.spa = spa;
 	}
 
-	public HashMap<URI,SemanticPath> LevelSearch(int hops) {
+	public HashMap<URI,SemanticPath> LevelSearch(int hops) throws SLIB_Exception {
 		pathMap = new HashMap<URI, ArrayList<SemanticPath>>();
 		hopMap = new HashMap<Integer, ArrayList<Target>>();
 		ArrayList<Target> targetList = new ArrayList<Target>();
@@ -59,7 +62,7 @@ public class BFSLevel {
 
 	}
 
-	private ArrayList<Target> firstLevelSearch(Set<URI> vertices, Set<E> edges, URI src) {
+	private ArrayList<Target> firstLevelSearch(Set<URI> vertices, Set<E> edges, URI src) throws SLIB_Exception {
 		ArrayList<Target> result = new ArrayList<Target>();
 		for (URI v : vertices) {
 			if (!visited.contains(v)) {
@@ -67,8 +70,10 @@ public class BFSLevel {
 					if (e.getSource().equals(src)) {
 						if (e.getTarget().equals(v)) {
 							Target target = new Target(v, e, 1);
-							SemanticPath seamnticPathTemp = target.getPath();
-							seamnticPathTemp.setSemanticPath(spa.getSemanticPath(seamnticPathTemp));
+							SemanticPath semanticPathTemp = target.getPath();
+							semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
+						//	double ic = iCalc.calculateInformation(semanticPathTemp);
+						//	semanticPathTemp.setInformationGain(ic);
 							result.add(target);
 						}
 					}
@@ -78,7 +83,7 @@ public class BFSLevel {
 		return result;
 	}
 
-	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList, int hop) {
+	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList, int hop) throws SLIB_Exception {
 		ArrayList<Target> result = new ArrayList<Target>();
 		for (int i = 0; i < targetList.size(); i++) {
 			Target target = targetList.get(0);
@@ -95,6 +100,8 @@ public class BFSLevel {
 								SemanticPath semanticPathTemp = newtarget.getPath();
 								semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
 								if(this.isPathCorrect(newtarget.getPath().getSemanticPath())){
+								//	double ic = iCalc.calculateInformation(semanticPathTemp);
+								//	semanticPathTemp.setInformationGain(ic);
 									result.add(newtarget);
 								}
 							}
@@ -130,17 +137,17 @@ public class BFSLevel {
 	}
 	
 	private HashMap<URI,SemanticPath> selectHighestInformationPath(){
-		double max = 0.0;
+		double min = 0.0;
 		int position =0;
 		HashMap<URI,SemanticPath> result = new HashMap<URI,SemanticPath>();
 		
 		for(HashMap.Entry<URI,ArrayList<SemanticPath>> entry: pathMap.entrySet()){
 			ArrayList<SemanticPath> value = entry.getValue();
 			URI key = entry.getKey();
-			max = value.get(0).getInformationGain();
+			min = value.get(0).getInformationGain();
 			for(int i = 1; i<value.size();i++){
-				if(max<value.get(i).getInformationGain()){
-					max = value.get(i).getInformationGain();
+				if(min>value.get(i).getInformationGain()){
+					min = value.get(i).getInformationGain();
 					position = i;
 				}
 			}
