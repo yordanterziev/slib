@@ -17,7 +17,6 @@ import org.openrdf.model.vocabulary.RDFS;
 
 import slib.examples.sml.general.xml.edges.Edges;
 import slib.graph.algo.traversal.classical.BFS;
-import slib.graph.algo.traversal.classical.BFSLevel;
 import slib.graph.algo.utils.SemanticPath;
 import slib.graph.algo.utils.SemanticPathAdder;
 import slib.graph.model.graph.G;
@@ -29,6 +28,7 @@ import slib.graph.utils.WalkConstraintGeneric;
 import slib.sml.sm.core.engine.SM_Engine;
 import slib.sml.sm.core.metrics.ic.utils.IC_Conf_Topo;
 import slib.sml.sm.core.metrics.ic.utils.ICconf;
+import slib.sml.sm.core.utils.BFSLevel;
 import slib.sml.sm.core.utils.SMConstants;
 import slib.sml.sm.core.utils.SMconf;
 import slib.utils.ex.SLIB_Exception;

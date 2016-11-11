@@ -1,4 +1,4 @@
-package slib.graph.algo.traversal.classical;
+package slib.sml.sm.core.utils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +26,7 @@ public class BFSLevel {
 	HashMap<URI, ArrayList<SemanticPath>> pathMap;
 	CorrectPaths correctPaths;
 	SemanticPathAdder spa;
-//	InformationCalculator iCalc;
+	InformationCalculator iCalc;
 
 	public BFSLevel(G g, URI source, WalkConstraint wc, SemanticPathAdder spa) {
 		this.g = g;
