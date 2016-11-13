@@ -7,10 +7,10 @@ import slib.graph.model.graph.elements.E;
 
 
 /**
- * @author Florian Jakobs
- * 
  * This class provides a list of edges (path). Furthermore it provides a semantic path in the form of "UDH".
  * It also stores the information gain the path provides.
+ * @author Florian Jakobs
+ * 
  */
 public class SemanticPath {
 	ArrayList<E> path;

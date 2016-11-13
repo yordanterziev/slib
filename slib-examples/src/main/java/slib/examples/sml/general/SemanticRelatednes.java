@@ -12,6 +12,7 @@ import org.openrdf.model.URI;
 import slib.examples.sml.tree.SrTree;
 import slib.graph.algo.utils.SemanticPath;
 import slib.graph.model.graph.elements.E;
+import slib.utils.ex.SLIB_Ex_Critic;
 import slib.utils.ex.SLIB_Exception;
 
 /**
@@ -53,6 +54,7 @@ public interface SemanticRelatednes {
 	 * @param file XML file
 	 * @throws JAXBException
 	 * @throws FileNotFoundException
+	 * @throws SLIB_Ex_Critic 
 	 */
-	public void initialiseWalk(String file) throws JAXBException, FileNotFoundException;
+	public void initialiseWalk(String file) throws JAXBException, FileNotFoundException, SLIB_Ex_Critic;
 }

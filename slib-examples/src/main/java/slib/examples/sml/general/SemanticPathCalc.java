@@ -31,6 +31,7 @@ import slib.sml.sm.core.metrics.ic.utils.ICconf;
 import slib.sml.sm.core.utils.BFSLevel;
 import slib.sml.sm.core.utils.SMConstants;
 import slib.sml.sm.core.utils.SMconf;
+import slib.utils.ex.SLIB_Ex_Critic;
 import slib.utils.ex.SLIB_Exception;
 
 /**
@@ -132,8 +133,9 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	/**
 	 * Loads the upward downward and horizontal Edges into the WC and creates a
 	 * BFS
+	 * @throws SLIB_Ex_Critic 
 	 */
-	private void loadBFS() {
+	private void loadBFS() throws SLIB_Ex_Critic {
 		HashMap<URI, Direction> map = new HashMap<URI, Direction>();
 		for (String s : hEdges) {
 			URI temp = uriFactory.getURI(ontology + "#" + s);
@@ -153,7 +155,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public void initialiseWalk(String file) throws JAXBException, FileNotFoundException {
+	public void initialiseWalk(String file) throws JAXBException, FileNotFoundException, SLIB_Ex_Critic {
 		// TODO Auto-generated method stub
 		this.loadEdges(file);
 		this.loadBFS();

@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.openrdf.model.URI;
 
-//import slib.examples.sml.general.InformationCalculator;
+
 import slib.graph.algo.utils.CorrectPaths;
 import slib.graph.algo.utils.SemanticPath;
 import slib.graph.algo.utils.SemanticPathAdder;
@@ -15,8 +15,14 @@ import slib.graph.algo.utils.Target;
 import slib.graph.model.graph.G;
 import slib.graph.model.graph.elements.E;
 import slib.graph.model.graph.utils.WalkConstraint;
+import slib.utils.ex.SLIB_Ex_Critic;
 import slib.utils.ex.SLIB_Exception;
 
+/**
+ *  This class performs a BFS on a given graph. For each iteration a map of {@link Target} nodes and {@link SemanticPath}
+ *  to these nodes are provided.
+ * @author Florian Jakobs
+ */
 public class BFSLevel {
 	G g;
 	private WalkConstraint wc;
@@ -28,7 +34,15 @@ public class BFSLevel {
 	SemanticPathAdder spa;
 	InformationCalculator iCalc;
 
-	public BFSLevel(G g, URI source, WalkConstraint wc, SemanticPathAdder spa) {
+	/**
+	 * Creates an instance of BFSLevel
+	 * @param g the graph on which the BFS is performed.
+	 * @param source the starting node
+	 * @param wc the {@link WalkContstraint}
+	 * @param spa the {@link SemanticPathAdder}
+	 * @throws SLIB_Ex_Critic
+	 */
+	public BFSLevel(G g, URI source, WalkConstraint wc, SemanticPathAdder spa) throws SLIB_Ex_Critic {
 		this.g = g;
 		this.wc = wc;
 		this.source = source;
@@ -36,14 +50,21 @@ public class BFSLevel {
 		visited.add(source);
 		correctPaths  = new CorrectPaths();
 		this.spa = spa;
+		iCalc = new InformationCalculator(g);
 	}
 
+	/**
+	 * Method for performing the level search. Returns a {@link HashMap} of {@link URI} and {@link SemanticPath} containing the best Path to each URI
+	 * @param hops the amount of levels to be searched
+	 * @return the HashMap
+	 * @throws SLIB_Exception
+	 */
 	public HashMap<URI,SemanticPath> LevelSearch(int hops) throws SLIB_Exception {
 		pathMap = new HashMap<URI, ArrayList<SemanticPath>>();
 		hopMap = new HashMap<Integer, ArrayList<Target>>();
-		ArrayList<Target> targetList = new ArrayList<Target>();
 		for (int i = 1; i <= hops; i++) {
 			if (i == 1) {
+				ArrayList<Target> targetList = new ArrayList<Target>();
 				targetList.addAll(this.firstLevelSearch(g.getV(source, wc), g.getE(source, wc), source));
 				hopMap.put(1, targetList);
 				this.targetPutInMap(targetList);
@@ -51,6 +72,7 @@ public class BFSLevel {
 			} else {
 				ArrayList<Target> queue = new ArrayList<Target>();
 				queue.addAll(hopMap.get(i-1));
+				ArrayList<Target> targetList = new ArrayList<Target>();
 				targetList.addAll(this.nextLevelSearch(queue, i));
 				hopMap.put(i, targetList);
 				this.targetPutInMap(targetList);
@@ -62,6 +84,14 @@ public class BFSLevel {
 
 	}
 
+	/**
+	 * Method for the first level.
+	 * @param vertices
+	 * @param edges
+	 * @param src
+	 * @return an {@link ArrayList} of {@link Target} which are reached after one level
+	 * @throws SLIB_Exception
+	 */
 	private ArrayList<Target> firstLevelSearch(Set<URI> vertices, Set<E> edges, URI src) throws SLIB_Exception {
 		ArrayList<Target> result = new ArrayList<Target>();
 		for (URI v : vertices) {
@@ -72,8 +102,8 @@ public class BFSLevel {
 							Target target = new Target(v, e, 1);
 							SemanticPath semanticPathTemp = target.getPath();
 							semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
-						//	double ic = iCalc.calculateInformation(semanticPathTemp);
-						//	semanticPathTemp.setInformationGain(ic);
+							double ic = iCalc.calculateInformation(semanticPathTemp);
+							semanticPathTemp.setInformationGain(ic);
 							result.add(target);
 						}
 					}
@@ -83,10 +113,17 @@ public class BFSLevel {
 		return result;
 	}
 
+	/**
+	 * Method for calculating every step after the first.
+	 * @param targetList the list of {@link Traget} after the previous search
+	 * @param hop the current hop
+	 * @return an {@link ArrayList} of {@link Target} which are reached after @b hop level
+	 * @throws SLIB_Exception
+	 */
 	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList, int hop) throws SLIB_Exception {
 		ArrayList<Target> result = new ArrayList<Target>();
 		for (int i = 0; i < targetList.size(); i++) {
-			Target target = targetList.get(0);
+			Target target = targetList.get(i);
 			URI src = targetList.get(i).getNode();
 			Set<URI> vertices = g.getV(src, wc);
 			Set<E> edges = g.getE(src, wc);
@@ -100,8 +137,8 @@ public class BFSLevel {
 								SemanticPath semanticPathTemp = newtarget.getPath();
 								semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
 								if(this.isPathCorrect(newtarget.getPath().getSemanticPath())){
-								//	double ic = iCalc.calculateInformation(semanticPathTemp);
-								//	semanticPathTemp.setInformationGain(ic);
+									double ic = iCalc.calculateInformation(semanticPathTemp);
+									semanticPathTemp.setInformationGain(ic);
 									result.add(newtarget);
 								}
 							}
@@ -113,6 +150,10 @@ public class BFSLevel {
 		return result;
 	}
 
+	/**
+	 * Puts the targetList in pathMap
+	 * @param targetList
+	 */
 	private void targetPutInMap(ArrayList<Target> targetList) {
 		for (int j = 0; j < targetList.size(); j++) {
 			URI uri = targetList.get(j).getNode();
@@ -128,6 +169,11 @@ public class BFSLevel {
 		}
 	}
 	
+	/**
+	 * Checks if a {@link SemanticPath} is correct
+	 * @param path the path to be checked
+	 * @return
+	 */
 	private boolean isPathCorrect(String path){
 		boolean result = false;
 		if(correctPaths.isSemanticCorrect(path)){
@@ -136,14 +182,19 @@ public class BFSLevel {
 		return result;
 	}
 	
+	/**
+	 * Selects the best Path for the search
+	 * @return the map containg the best path for each URI
+	 */
 	private HashMap<URI,SemanticPath> selectHighestInformationPath(){
-		double min = 0.0;
-		int position =0;
+
 		HashMap<URI,SemanticPath> result = new HashMap<URI,SemanticPath>();
 		
 		for(HashMap.Entry<URI,ArrayList<SemanticPath>> entry: pathMap.entrySet()){
 			ArrayList<SemanticPath> value = entry.getValue();
 			URI key = entry.getKey();
+			double min = 0.0;
+			int position =0;
 			min = value.get(0).getInformationGain();
 			for(int i = 1; i<value.size();i++){
 				if(min>value.get(i).getInformationGain()){
