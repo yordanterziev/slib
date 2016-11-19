@@ -15,7 +15,7 @@ import slib.utils.ex.SLIB_Exception;
  */
 public class SRComputation {
 
-	public static void main(String[] args) throws SLIB_Exception, JAXBException, FileNotFoundException {
+	public static void main(String[] args) throws SLIB_Exception, JAXBException, FileNotFoundException, CloneNotSupportedException {
 		// TODO Auto-generated method stub
 
 		String swrcOntology = "http://swrc.ontoware.org/ontology";

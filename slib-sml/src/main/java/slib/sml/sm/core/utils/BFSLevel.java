@@ -58,8 +58,9 @@ public class BFSLevel {
 	 * @param hops the amount of levels to be searched
 	 * @return the HashMap
 	 * @throws SLIB_Exception
+	 * @throws CloneNotSupportedException 
 	 */
-	public HashMap<URI,SemanticPath> LevelSearch(int hops) throws SLIB_Exception {
+	public HashMap<URI,SemanticPath> LevelSearch(int hops) throws SLIB_Exception, CloneNotSupportedException {
 		pathMap = new HashMap<URI, ArrayList<SemanticPath>>();
 		hopMap = new HashMap<Integer, ArrayList<Target>>();
 		for (int i = 1; i <= hops; i++) {
@@ -119,8 +120,9 @@ public class BFSLevel {
 	 * @param hop the current hop
 	 * @return an {@link ArrayList} of {@link Target} which are reached after @b hop level
 	 * @throws SLIB_Exception
+	 * @throws CloneNotSupportedException 
 	 */
-	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList, int hop) throws SLIB_Exception {
+	private ArrayList<Target> nextLevelSearch(ArrayList<Target> targetList, int hop) throws SLIB_Exception, CloneNotSupportedException {
 		ArrayList<Target> result = new ArrayList<Target>();
 		for (int i = 0; i < targetList.size(); i++) {
 			Target target = targetList.get(i);
@@ -132,7 +134,9 @@ public class BFSLevel {
 					for (E e : edges) {
 						if (e.getSource().equals(src)) {
 							if (e.getTarget().equals(v)) {
-								Target newtarget = new Target(v, target.getPath(), hop);
+								Target newtarget = new Target(target);
+								newtarget.setHops(hop);
+								newtarget.setNode(v);
 								newtarget.getPath().addEdge(e);
 								SemanticPath semanticPathTemp = newtarget.getPath();
 								semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));

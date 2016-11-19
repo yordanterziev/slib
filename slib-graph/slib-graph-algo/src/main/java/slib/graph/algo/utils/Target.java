@@ -13,11 +13,11 @@ import slib.graph.model.graph.elements.E;
  * @author Florian
  * This class represents a target node in a graph search like BFS or DFS.
  */
-public class Target {
+public class Target implements Cloneable {
 	
-	URI node;
-	SemanticPath path;
-	int hops;
+	private URI node;
+	private SemanticPath path;
+	private int hops;
 	
 	public Target(URI node, E edge, int hops) {
 		super();
@@ -27,11 +27,18 @@ public class Target {
 		this.hops = hops;
 	}
 	
-	public Target(URI node, SemanticPath path, int hops) {
-		super();
+	public Target(Target t){
+		this.hops = t.hops;
+		this.node = t.node;
+		this.path = new SemanticPath(t.path.getPath());
+		this.path.semanticPath = t.path.semanticPath;
+	}
+	
+	public void setNode(URI node) {
 		this.node = node;
-		this.path = path;
+	}
 
+	public void setHops(int hops) {
 		this.hops = hops;
 	}
 
@@ -39,14 +46,12 @@ public class Target {
 		return node;
 	}
 
-	public SemanticPath getPath() {
-		return path;
-	}
-
 	public int getHops() {
 		return hops;
 	}
 	
-	
+	public SemanticPath getPath() {
+		return path;
+	}	
 	
 }

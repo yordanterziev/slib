@@ -33,7 +33,7 @@ public interface SemanticRelatednes {
 	
 	
 	//We need a suitable data structure
-	public HashMap<URI, SemanticPath> getSemanticallyCorrectPaths(int hops) throws SLIB_Exception;
+	public HashMap<URI, SemanticPath> getSemanticallyCorrectPaths(int hops) throws SLIB_Exception, CloneNotSupportedException;
 
 	
 	/**

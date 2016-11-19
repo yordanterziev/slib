@@ -162,7 +162,7 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public HashMap<URI,SemanticPath> getSemanticallyCorrectPaths(int hops) throws SLIB_Exception {
+	public HashMap<URI,SemanticPath> getSemanticallyCorrectPaths(int hops) throws SLIB_Exception, CloneNotSupportedException {
 		// TODO Auto-generated method stub
 		HashMap<URI,SemanticPath> temp = bfs.LevelSearch(hops);
 

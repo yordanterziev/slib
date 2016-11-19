@@ -66,15 +66,16 @@ public class InformationCalculator {
 				if(length>=2){
 					double top = engine.getIC(icConf, list.get(split.get(i).length()-1).getTarget());
 					double bot = engine.getIC(icConf, list.get(0).getSource());
-					temp = top - bot;
+					temp = bot - top;
 				}else{
 					double top = engine.getIC(icConf, list.get(0).getTarget());
 					double bot = engine.getIC(icConf, list.get(0).getSource());
-					temp = top - bot;
+					temp = bot - top;
 				}
 				list.subList(0, split.get(i).length()).clear();
 			}else{
-				temp = (split.get(i).length()/(1+split.get(i).length()));
+				temp = (split.get(i).length());
+				temp = temp / (temp+1);
 				list.subList(0, split.get(i).length()).clear();
 			}
 			result += temp;
