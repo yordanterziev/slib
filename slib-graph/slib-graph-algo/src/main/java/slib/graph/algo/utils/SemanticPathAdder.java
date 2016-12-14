@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import slib.graph.model.graph.elements.E;
 
 /**
- * @author Florian
+ * A class to match a edge to its semantic equivalent. E.g. matching an edge A to Upward.
+ * @author Florian Jakobs
  *
  */
 public class SemanticPathAdder {
@@ -23,6 +24,10 @@ public class SemanticPathAdder {
 		this.hEdges = hEdges;
 	}
 	
+	/**
+	 * @param semanticPath the path whose edges have to be matched
+	 * @return the semantic edges
+	 */
 	public String getSemanticPath(SemanticPath semanticPath){
 		String temp = "";
 		ArrayList<E> path = semanticPath.getPath();

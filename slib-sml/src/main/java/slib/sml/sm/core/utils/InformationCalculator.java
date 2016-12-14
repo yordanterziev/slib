@@ -14,7 +14,7 @@ import slib.utils.ex.SLIB_Exception;
 
 /**
  * The class calculates the Information Gain for a given SemanticPath. It does not check if the path is correct.
- * In this implementation it uses "Sanchez" method for calculating the IC of a single node.
+ * In this implementation it uses "Sanchez" method for calculating the IC of a single node. Different methods can be used.
  * @author Florian Jakobs
  *
  */
@@ -30,6 +30,8 @@ public class InformationCalculator {
 	 * @throws SLIB_Ex_Critic
 	 */
 	public InformationCalculator(G g) throws SLIB_Ex_Critic {
+		// Sanchez method was used. It can be changed to use different methods for calculating IC.
+		
 		icConf = new IC_Conf_Topo("SANCHEZ", SMConstants.FLAG_ICI_SANCHEZ_2011);
 		measureConf = new SMconf(SMConstants.FLAG_SIM_PAIRWISE_DAG_EDGE_RESNIK_1995);
 		sps = new SemanticPathSplitter();
@@ -39,10 +41,11 @@ public class InformationCalculator {
 	/**
 	 * Calculates the Information Gain of a Semantic Path. It returns a {@code double} representing the Information gain.
 	 * @param path the path which is to be calculated
+	 * @param tx the value assigned to horizontal Edges
 	 * @return the Information gain
 	 * @throws SLIB_Exception
 	 */
-	public double calculateInformation(SemanticPath path) throws SLIB_Exception {
+	public double calculateInformation(SemanticPath path, double tx) throws SLIB_Exception {
 		ArrayList<String> split = sps.dividePath(path);
 		ArrayList<E> list = new ArrayList<E>();
 		list.addAll(path.getPath());
@@ -54,11 +57,11 @@ public class InformationCalculator {
 				if(length>=2){
 					double top = engine.getIC(icConf, list.get(split.get(i).length()-1).getTarget());
 					double bot = engine.getIC(icConf, list.get(0).getSource());
-					temp = top - bot;
+					temp = Math.abs(top - bot);
 				}else{
 					double top = engine.getIC(icConf, list.get(0).getTarget());
 					double bot = engine.getIC(icConf, list.get(0).getSource());
-					temp = top - bot;	
+					temp = Math.abs(top - bot);	
 				}
 
 				list.subList(0, split.get(i).length()).clear();
@@ -66,16 +69,18 @@ public class InformationCalculator {
 				if(length>=2){
 					double top = engine.getIC(icConf, list.get(split.get(i).length()-1).getTarget());
 					double bot = engine.getIC(icConf, list.get(0).getSource());
-					temp = bot - top;
+					temp = Math.abs(top - bot);
 				}else{
 					double top = engine.getIC(icConf, list.get(0).getTarget());
 					double bot = engine.getIC(icConf, list.get(0).getSource());
-					temp = bot - top;
+					temp = Math.abs(top - bot);
 				}
 				list.subList(0, split.get(i).length()).clear();
 			}else{
+				// tx * (n/n+1)
 				temp = (split.get(i).length());
 				temp = temp / (temp+1);
+				temp *= tx;
 				list.subList(0, split.get(i).length()).clear();
 			}
 			result += temp;

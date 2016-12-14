@@ -12,6 +12,7 @@ import slib.graph.model.graph.elements.E;
 /**
  * @author Florian
  * This class represents a target node in a graph search like BFS or DFS.
+ * This means it contains a URI of the "target node" and the entire path towards this node.
  */
 public class Target implements Cloneable {
 	

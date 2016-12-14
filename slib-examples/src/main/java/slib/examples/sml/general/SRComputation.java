@@ -29,7 +29,7 @@ public class SRComputation {
 		test.initialiseWalk("Edge.xml");
 		test.getSemanticallyCorrectPaths(hops);
 		System.out.println(test.getSemanticRelatedness(factory.getURI(swrcOntology + origin),
-				factory.getURI(swrcOntology + "#Organization")));
+				factory.getURI(swrcOntology + "#Organization"), 1));
 		// commit
 
 	}

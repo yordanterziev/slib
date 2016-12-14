@@ -93,23 +93,30 @@ public class SemanticPathCalc implements SemanticRelatednes {
 	}
 
 	@Override
-	public double getSemanticRelatedness(URI uriA, URI uriB) throws SLIB_Exception {
+	public double getSemanticRelatedness(URI uriA, URI uriB, int hops) throws SLIB_Exception, CloneNotSupportedException {
 		// TODO Auto-generated method stub
-		// double ic1 = engine.getIC(icConf, uriA);
-		// double ic2 = engine.getIC(icConf, uriB);
-		measureConf.setICconf(icConf);
-		System.out.println(engine.getIC(icConf, uriA));
-		System.out.println(engine.getIC(icConf, uriB));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#ResearchGroup")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Student")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Graduate")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#University")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Employee")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Publication")));
-		System.out.println(engine.getIC(icConf, uriFactory.getURI(ontology + "#Misc")));
-		// System.out.println(engine.getIC(icConf,
-		// uriFactory.getURI(ontology+"#Thing")));
-		return engine.compare(measureConf, uriA, uriB);
+		HashMap<URI, Direction> map = new HashMap<URI, Direction>();
+		for (String s : hEdges) {
+			URI temp = uriFactory.getURI(ontology + "#" + s);
+			map.put(temp, Direction.BOTH);
+		}
+		for (String s : dEdges) {
+			URI temp = uriFactory.getURI(ontology + "#" + s);
+			map.put(temp, Direction.BOTH);
+		}
+		for (String s : uEdges) {
+			URI temp = uriFactory.getURI(ontology + "#" + s);
+			map.put(temp, Direction.BOTH);
+		}
+		WalkConstraint wc = new WalkConstraintGeneric(RDFS.SUBCLASSOF, Direction.BOTH);
+		wc.addWalkconstraints(new WalkConstraintGeneric(map));
+		BFSLevel tempBFS = new BFSLevel(graph, uriA, wc,spa);
+		HashMap<URI,SemanticPath> temp = tempBFS.LevelSearch(hops);
+		if(temp.get(uriB) != null){
+			return temp.get(uriB).getInformationGain();
+		}else{
+			return -1.0;
+		}
 	}
 
 	/**

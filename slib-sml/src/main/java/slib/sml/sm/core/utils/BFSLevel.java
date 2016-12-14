@@ -103,7 +103,8 @@ public class BFSLevel {
 							Target target = new Target(v, e, 1);
 							SemanticPath semanticPathTemp = target.getPath();
 							semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
-							double ic = iCalc.calculateInformation(semanticPathTemp);
+							//tx = 1 to match horizontal edges
+							double ic = iCalc.calculateInformation(semanticPathTemp,1.0);
 							semanticPathTemp.setInformationGain(ic);
 							result.add(target);
 						}
@@ -141,7 +142,8 @@ public class BFSLevel {
 								SemanticPath semanticPathTemp = newtarget.getPath();
 								semanticPathTemp.setSemanticPath(spa.getSemanticPath(semanticPathTemp));
 								if(this.isPathCorrect(newtarget.getPath().getSemanticPath())){
-									double ic = iCalc.calculateInformation(semanticPathTemp);
+									//tx = 1 to match horizontal edges
+									double ic = iCalc.calculateInformation(semanticPathTemp,1.0);
 									semanticPathTemp.setInformationGain(ic);
 									result.add(newtarget);
 								}

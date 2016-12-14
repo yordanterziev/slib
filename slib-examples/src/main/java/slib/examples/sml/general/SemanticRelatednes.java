@@ -33,17 +33,26 @@ public interface SemanticRelatednes {
 	
 	
 	//We need a suitable data structure
+	/**
+	 * Method for walking through the graph a given number of times.
+	 * @param hops the depth of the BFSLevel
+	 * @return a HashMap of all semantically correct reached URIs and the corresponding path.
+	 * @throws SLIB_Exception
+	 * @throws CloneNotSupportedException
+	 */
 	public HashMap<URI, SemanticPath> getSemanticallyCorrectPaths(int hops) throws SLIB_Exception, CloneNotSupportedException;
 
 	
 	/**
 	 * @param uriA Starting concept of the calculation
 	 * @param uriB Finishing concept
+	 * @param the number of hops to be considered
 	 * @return the Semantic Relatedness if a correct path can be found;
 	 *  -1 otherwise
 	 * @throws SLIB_Exception 
+	 * @throws CloneNotSupportedException 
 	 */
-	public double getSemanticRelatedness(URI uriA, URI uriB ) throws SLIB_Exception;
+	public double getSemanticRelatedness(URI uriA, URI uriB, int hops ) throws SLIB_Exception, CloneNotSupportedException;
 	
 	/**
 	 * Loads the upward, downward and horizontal edges defined in an XML file and 

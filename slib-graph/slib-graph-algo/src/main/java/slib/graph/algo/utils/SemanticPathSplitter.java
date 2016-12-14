@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Splits a given {@link Semantic Path} in consecutive upward downard and horizontal edges.
  * 
- * @author Florian
+ * @author Florian Jakobs
  *
  */
 public class SemanticPathSplitter {
@@ -17,6 +17,7 @@ public class SemanticPathSplitter {
 	}
 	
 	/**
+	 * Splits the path in consecutive segments of the same edges
 	 * @param path the path to be split
 	 * @return an ArrayList of split paths
 	 */
