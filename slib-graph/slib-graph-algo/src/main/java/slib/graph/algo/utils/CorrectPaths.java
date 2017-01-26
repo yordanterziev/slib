@@ -50,9 +50,9 @@ public class CorrectPaths {
 		if (path.length() > 3) {
 			path = path.substring(path.length() - 3);
 		}
-		for (int i = 0; i <= correctPaths.size(); i++) {
+		for (int i = 0; i < correctPaths.size(); i++) {
 			result = correctPaths.get(i).equals(path);
-			if (result = true) {
+			if (result == true) {
 				break;
 			}
 		}
